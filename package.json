@@ -26,10 +26,13 @@
     },
     "dependencies": {
         "@mdi/font": "^5.0.45",
+        "@websanova/vue-auth": "^2.21.17-beta",
         "material-design-icons-iconfont": "^5.0.1",
+        "path": "^0.12.7",
         "vue-axios": "^2.1.5",
         "vue-router": "^3.1.6",
         "vuetify": "^2.2.16",
-        "vuex": "^3.1.3"
+        "vuex": "^3.1.3",
+        "vuex-pathify": "^1.4.1"
     }
 }

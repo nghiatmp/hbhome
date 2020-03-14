@@ -100,6 +100,11 @@
       <path value="$PROJECT_DIR$/vendor/laravel/framework" />
       <path value="$PROJECT_DIR$/vendor/filp/whoops" />
       <path value="$PROJECT_DIR$/vendor/phpunit/php-token-stream" />
+      <path value="$PROJECT_DIR$/vendor/namshi/jose" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-util" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php56" />
+      <path value="$PROJECT_DIR$/vendor/lcobucci/jwt" />
+      <path value="$PROJECT_DIR$/vendor/tymon/jwt-auth" />
     </include_path>
   </component>
   <component name="ProjectId" id="1YzJ3s3xQSaADidx3GvWmA8FPUT" />
@@ -112,7 +117,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../BTLPHP/line-develop" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/resources/js/views/layout" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -120,13 +125,16 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+    <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\PhpStorm 2019.3\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\ADMIN\Documents\HBHome" />
+      <recent name="C:\Users\ADMIN\Documents\HBHome\resources\js\views\layout" />
+      <recent name="C:\Users\ADMIN\Documents\HBHome\resources\js\views" />
       <recent name="C:\Users\ADMIN\Documents\HBHome\resources\js" />
-      <recent name="C:\Users\ADMIN\Documents\HBHome\resources\views" />
-      <recent name="C:\Users\ADMIN\Documents\HBHome\app\Http\Controllers" />
+      <recent name="C:\Users\ADMIN\Documents\HBHome\app\Http\Controllers\API\Auth" />
+      <recent name="C:\Users\ADMIN\Documents\HBHome\app" />
     </key>
   </component>
   <component name="RunManager">
@@ -166,9 +174,17 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="549" y="170" key="FileChooserDialogImpl" timestamp="1584154346146">
+    <state x="549" y="170" key="FileChooserDialogImpl" timestamp="1584174675756">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="549" y="170" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1584154346146" />
+    <state x="549" y="170" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1584174675756" />
+    <state x="279" y="57" key="SettingsEditor" timestamp="1584178396883">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="279" y="57" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1584178396883" />
+    <state x="425" y="189" key="run.anything.popup" timestamp="1584171177948">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="425" y="189" key="run.anything.popup/0.0.1536.824@0.0.1536.824" timestamp="1584171177948" />
   </component>
 </project>

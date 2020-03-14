@@ -1,75 +1,98 @@
 <template>
-    <div class="login-box" style="margin: auto">
-        <div class="login-logo mt-3">
-            <a href="#"><b>ANNOTATE-TOOL</b></a>
-        </div>
-        <!-- /.login-logo -->
-        <div class="card mt-3" >
-            <div class="card-body login-card-body">
-                <p class="login-box-msg">Sign in</p>
+    <v-app>
+        <v-content>
+            <v-container
+                fluid
+                fill-height
+            >
+                <v-layout
+                    align-center
+                    justify-center
+                >
+                    <v-flex
+                        xs12
+                        sm8
+                        md4
+                    >
+                        <v-card class="elevation-12">
+                            <v-toolbar
+                                color="primary"
+                                dark
+                                flat
+                            >
+                                <v-toolbar-title>Login</v-toolbar-title>
+                                <v-spacer />
+                            </v-toolbar>
+                            <v-card-text>
+                                <v-form>
+                                    <v-text-field
+                                        v-model="email"
+                                        label="Email"
+                                        name="email"
+                                        prepend-icon="person"
+                                        type="text"
+                                        @keyup.enter="login"
+                                    />
 
-                <form>
-                    <div class="input-group">
-                        <input type="email" class="form-control" placeholder="Email" required v-model="email">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-envelope"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="color: red"> {{ error_email }}</div>
-                    <br>
-                    <div class="input-group">
-                        <input type="password" class="form-control" placeholder="Password" required v-model="password">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="color: red"> {{ error_password }}</div>
-                    <br>
-                    <div class="row">
-                        <!-- /.col -->
-                        <div class="col-4">
-                            <button @click.prevent="login()" class="btn btn-primary btn-block">Sign In</button>
-                        </div>
-                        <!-- /.col -->
-                    </div>
-                </form>
-            </div>
-            <!-- /.login-card-body -->
-        </div>
-    </div>
+                                    <v-text-field
+                                        v-model="password"
+                                        label="Password"
+                                        name="password"
+                                        prepend-icon="lock"
+                                        type="password"
+                                        @keyup.enter="login"
+                                    />
+                                </v-form>
+                                <v-alert
+                                    v-show="hasError"
+                                    dense
+                                    outlined
+                                    type="error"
+                                >Incorrect information</v-alert>
+                            </v-card-text>
+                            <v-card-actions class="justify-center">
+                                <v-btn :loading="loading" color="primary" @click="login">Login</v-btn>
+
+                            </v-card-actions>
+                        </v-card>
+                    </v-flex>
+                </v-layout>
+            </v-container>
+        </v-content>
+    </v-app>
 </template>
-
 <script>
+    import { call } from 'vuex-pathify';
     export default {
-        name: 'Login',
         data() {
             return {
-                email: null,
-                password: null,
-                error_login: null,
-                error_email: null,
-                error_password: null,
+                email: '',
+                password: '',
+                hasError: false,
+                loading: false,
+
             };
         },
         methods: {
+            setUserInfo: call('user/setUserInfo'),
             login() {
+                this.loading = true;
                 this.$auth.login({
-                    params : {
+                    data: {
                         email: this.email,
                         password: this.password,
                     },
-                    success(res) {
-                        this.$router.push({ path: '/dashboard' });
+                    success: function(res) {
+                        this.hasError = false;
+                        this.loading = false;
+                        this.$router.push({ path: '/admin/dashboard' });
                     },
-                    error(res) {
-                        this.error_login = res.response.data.error;
-                        console.log(res.response.data.error);
+                    error: function() {
+                        this.loading = false;
+                        this.hasError = true;
                     },
                     rememberMe: true,
+                    fetchUser: true,
                 });
             },
         },

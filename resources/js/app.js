@@ -1,14 +1,14 @@
 import Vue from 'vue';
 import VueAxios from 'vue-axios';
 import App from './App.vue';
-// import VueAuth from '@websanova/vue-auth';
+import VueAuth from '@websanova/vue-auth';
 import router from './routes';
 import store from './store';
 import axios from 'axios';
 import VueRouter from 'vue-router';
 import Vuetify from 'vuetify';
 import vuetify from './plugins/vuetify';
-// import auth from './auth';
+import auth from './auth';
 
 require('./bootstrap');
 
@@ -20,7 +20,7 @@ Vue.use(VueAxios, axios);
 
 Vue.use(Vuetify);
 Vue.use(VueRouter);
-// Vue.use(VueAuth, auth);
+Vue.use(VueAuth, auth);
 
 
 new Vue({
