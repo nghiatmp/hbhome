@@ -2,12 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c6fcd5ea-f65a-4914-b20b-03222c06671c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/HBHome.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/HBHome.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Services/UserService.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Services/UserService.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/js/components/Layout/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Layout/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/services/cooperation.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/services/friend.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/services/messages.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/constants/common.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/constants/common.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/plugins/vuetify.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/plugins/vuetify.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/js/views/activitylog/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/views/activitylog/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/views/myproject/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/views/myproject/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/views/phase/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/views/phase/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/views/project/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/views/project/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/views/user/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/views/user/index.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -129,7 +139,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../BTLPHP/line-develop" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -192,10 +202,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="525" y="222" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.824@0.0.1536.824" timestamp="1584196554693" />
-    <state x="549" y="170" key="FileChooserDialogImpl" timestamp="1584174675756">
+    <state x="549" y="170" key="FileChooserDialogImpl" timestamp="1584241079475">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="549" y="170" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1584174675756" />
+    <state x="549" y="170" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1584241079475" />
     <state x="279" y="57" key="SettingsEditor" timestamp="1584178396883">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
