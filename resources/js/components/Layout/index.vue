@@ -115,14 +115,12 @@
         >
             <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
             <v-toolbar-title style="width: 300px" class="ml-0 pl-4">
-                <span class="hidden-sm-and-down">HBHome</span>
+                <span class="hidden-sm-and-down white--text text--lighten-1">HBHome</span>
             </v-toolbar-title>
             <v-spacer />
-            <v-avatar size="32px" item>
-                <v-img src="https://cdn.vuetifyjs.com/images/logos/logo.svg" alt="Vuetify"/>
-            </v-avatar>
+            <v-icon>people</v-icon>
             <v-toolbar-title class="ml-1">
-                <span class="hidden-sm-and-down">{{ userInfo.full_name }}</span>
+                <span class="hidden-sm-and-down white--text text--lighten-1">{{ userInfo.email }}</span>
             </v-toolbar-title>
         </v-app-bar>
         <v-content>
@@ -284,7 +282,6 @@
                 this.axios
                 .get('api/auth/me')
                 .then(res => {
-                    console.log(res);
                 })
             }
         },
