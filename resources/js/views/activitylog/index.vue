@@ -93,7 +93,12 @@
                         :headers="headers"
                         :items="tableData"
                         class="elevation-4 mb-4"
-                    />
+                        locale="US"
+                    >
+                        <template v-slot:item.content="{ item }">
+                            <p v-html="item.content"></p>
+                        </template>
+                    </v-data-table>
                 </v-card>
             </v-card>
         </v-card>
@@ -120,12 +125,13 @@
                     type: TYPE_ACTIVITY_LOG_DEFAULT,
                     date_from: '',
                     date_to: '',
+                    sort_type: 'desc',
                 },
                 nowDate: new Date().toISOString().slice(0, 10),
                 menuFrom: false,
                 menuTo: false,
                 headers: [
-                    {text: 'No', value: 'no'},
+                    {text: 'No', value: 'duration'},
                     {text: 'Type', value: 'type'},
                     {text: 'Content', value: 'content'},
                     {text: 'User', value: 'full_name', align: 'center'},
@@ -174,13 +180,15 @@
                     .then(res=>{
                         const resData = res.data.data;
                         const DataTable = Object.keys(resData).map((key) => {
-                            const dataTableItem = { ... resData[key], duration: key };
+                            const dataTableItem = { ... resData[key], duration: parseInt(key)+1 };
                             return dataTableItem;
                         });
-                        let no = 1;
-                        Object.keys(DataTable).forEach(key => {
-                            DataTable[key]['no'] = no;
-                            no++;
+                        Object.values(DataTable).forEach(key => {
+                            Object.values(TYPE_ACTIVITY_LOG).forEach(item => {
+                                if (key.type == item.key) {
+                                    key.type = item.value;
+                                }
+                            });
                         });
                         this.tableData = DataTable;
                         this.isLoadingTable = false;

@@ -112,7 +112,7 @@ class UserService
         $orderBy = $params['orderBy'];
         $users = $this->user
             ->when(isset($keyword), function ($query) use ($keyword) {
-                $query->where('email', 'like', '%' . $keyword . '%');
+                $query->where('email', 'like', $keyword . '%');
             })
             ->orderBy($orderBy, $sortType)
             ->with('availableTeam')
