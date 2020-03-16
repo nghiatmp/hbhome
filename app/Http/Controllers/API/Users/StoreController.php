@@ -22,7 +22,7 @@ class StoreController extends Controller
         $this->userService = $userService;
         $this->teamService = $teamService;
     }
-    
+
     /**
      * Store
      * Add new user with given input
@@ -63,6 +63,7 @@ class StoreController extends Controller
                 );
             }
         }
+        $params['password'] = bcrypt($request->get('email'));
         $responseData = $this->userService->store($params);
         return response()->json($responseData, 200);
     }
