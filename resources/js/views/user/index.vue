@@ -1,6 +1,24 @@
 <template>
     <Layout>
         <v-card>
+            <v-snackbar
+                v-model="snackbar"
+                :color="colors"
+                :multi-line="mode === 'multi-line'"
+                :right="true"
+                :timeout="2500"
+                :top="true"
+                :vertical="mode === 'vertical'"
+            >
+                {{ snackbarText }}
+                <v-btn
+                    dark
+                    text
+                    @click="snackbar = false"
+                >
+                    Close
+                </v-btn>
+            </v-snackbar>
             <v-row>
                 <v-col class="mt-2 ml-2" cols="3" md="3" sm="6">
                     <v-text-field
@@ -55,7 +73,8 @@
         </v-card>
         <v-dialog
             v-model="diaLogcreateUser"
-            width="600px"
+            width="560px"
+            height="600px"
         >
             <v-card>
                 <v-card-title>
@@ -63,29 +82,55 @@
                 </v-card-title>
                 <v-container>
                     <v-row class="mx-2">
-                        <v-col class="align-center justify-space-between" cols="12">
-                            <v-row align="center" class="mr-0">
-                                <v-text-field placeholder="Name"/>
-                            </v-row>
+                        <v-col class="align-center " cols="12">
+                                <v-text-field
+                                    v-model="paramCreate.full_name"
+                                    placeholder="Name"
+                                    dense
+                                    outlined
+                                />
                         </v-col>
                         <v-col class="align-center justify-space-between" cols="12">
-                            <v-row align="center" class="mr-0">
-                                <v-text-field placeholder="Email"/>
-                            </v-row>
+                                <v-text-field
+                                    v-model="paramCreate.email"
+                                    placeholder="Email"
+                                    dense
+                                    outlined
+                                />
                         </v-col>
                         <v-col class="align-center justify-space-between" cols="12">
+                            <v-select
+                                v-model="paramCreate.team_id"
+                                :items="allTeam"
+                                label="Team"
+                                item-value="id"
+                                item-text="title"
+                                :hide-details="true"
+                                dense
+                                outlined
+                            />
+                        </v-col>
+                        <v-col class="align-center justify-space-between" cols="12">
+                            <v-select
+                                v-model="paramCreate.role"
+                                :items="roleCreate"
+                                label="Role"
+                                item-value="key"
+                                item-text="value"
+                                :hide-details="true"
+                                dense
+                                outlined
+                            />
                         </v-col>
                     </v-row>
                 </v-container>
                 <v-card-actions>
                     <v-btn
-                        text
-                        color="primary"
                         @click="diaLogcreateUser = false"
                     >Cancel</v-btn>
                     <v-btn
-                        text
-                        @click="diaLogcreateUser = false"
+                        color="primary"
+                        @click="CreateUser"
                     >Save</v-btn>
                 </v-card-actions>
             </v-card>
@@ -106,6 +151,9 @@
                 tableData :[],
                 isLoadingTable:false,
                 diaLogcreateUser:false,
+                snackbar: false,
+                snackbarText:'',
+                colors:'',
                 headers: [
                     { text: 'No', value: 'duration'},
                     { text: 'Full Name', value: 'full_name' },
@@ -114,6 +162,14 @@
                     { text: 'Role', value: 'role' },
                     { text: '', value: 'id' },
                 ],
+                paramCreate : {
+                    full_name : '',
+                    email : '',
+                    team_id : '',
+                    role : '',
+                },
+                roleCreate : SYSTEM_ROLE,
+                allTeam: [],
             }
         },
         computed: {
@@ -133,6 +189,7 @@
         },
         created() {
             this.renderData();
+            this.getAllTeam();
         },
         methods : {
             renderData() {
@@ -163,6 +220,51 @@
                         this.isLoadingTable = false;
                     })
 
+            },
+            getAllTeam() {
+                this.axios
+                .get('/api/teams')
+                .then(res=> {
+                    var TeamDefault = [{
+                        'id':'0',
+                        'title':'None'
+                    }];
+                    this.allTeam = TeamDefault.concat(res.data.data)
+                })
+                .catch(()=>{
+                    this.allTeam = [];
+                });
+            },
+            CreateUser() {
+                const paramsCreate= Object.keys(this.paramCreate).reduce((prev, key) => {
+                    if(this.paramCreate[key] !== null) {
+                        prev[key] = this.paramCreate[key];
+                    }
+                    return prev;
+                }, {});
+                this.axios
+                .post('/api/users', paramsCreate)
+                .then(res => {
+                    this.renderData();
+                    this.diaLogcreateUser = false;
+                    this.ClearDateInsert();
+                    this.snackbar =  true;
+                    this.snackbarText = 'Add User Success';
+                    this.colors = 'success';
+                })
+                .catch(()=> {
+                    this.diaLogcreateUser = false;
+                    this.ClearDateInsert();
+                    this.snackbar =  true;
+                    this.snackbarText = 'Add User False';
+                    this.colors = 'error';
+                });
+            },
+            ClearDateInsert() {
+                this.paramCreate.full_name='';
+                this.paramCreate.email='';
+                this.paramCreate.team_id='';
+                this.paramCreate.role='';
             },
             inputDebounce: debounce(function(value) {
                 this.keyword = value;
