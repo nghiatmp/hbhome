@@ -62,7 +62,7 @@
                         </template>
                         <template v-slot:item.id="{ item }">
                             <v-layout justify-center>
-                                <i class="far fa-edit"></i>
+                                <i class="far fa-edit" @click="GetDataUpdateUser(item)"></i>
                             </v-layout>
                         </template>
                     </v-data-table>
@@ -156,6 +156,93 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <v-dialog
+            v-model="diaLogUpdateUser"
+            width="560px"
+            height="600px"
+        >
+            <v-card>
+                <v-card-title>
+                    Update User
+                </v-card-title>
+                <v-container>
+                    <v-row class="mx-2">
+                        <v-col class="align-center " cols="12">
+                            <v-text-field
+                                v-model="paramUpdate.full_name"
+                                :error-messages="FullnameUpdateErrors"
+                                placeholder="Name"
+                                dense
+                                outlined
+                                required
+                                @input="$v.paramUpdate.full_name.$touch()"
+                                @blur="$v.paramUpdate.full_name.$touch()"
+                            />
+                        </v-col>
+                        <v-col class="align-center justify-space-between" cols="12">
+                            <v-text-field
+                                v-model="paramUpdate.email"
+                                :error-messages="emailUpdateErrors"
+                                placeholder="Email"
+                                dense
+                                outlined
+                                required
+                                @input="$v.paramUpdate.email.$touch()"
+                                @blur="$v.paramUpdate.email.$touch()"
+                            />
+                            <div class="v-text-field__details" v-if="errExistEmailUpdate">
+                                <div class="v-messages theme--light error--text" role="alert">
+                                    <div class="v-messages__wrapper">
+                                        <div class="v-messages__message">This email has already been set for another user</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </v-col>
+                        <v-col class="align-center justify-space-between" cols="12">
+                            <v-select
+                                v-model="paramUpdate.team_id"
+                                :error-messages="teamUpdateErrors"
+                                :items="allTeam"
+                                label="Team"
+                                item-value="id"
+                                item-text="title"
+                                :hide-details="true"
+                                dense
+                                outlined
+                                required
+                                @change="$v.paramUpdate.team_id.$touch()"
+                                @blur="$v.paramUpdate.team_id.$touch()"
+                            />
+                        </v-col>
+                        <v-col class="align-center justify-space-between" cols="12">
+                            <v-select
+                                v-model="paramUpdate.role"
+                                :items="roleCreate"
+                                label="Role"
+                                item-value="key"
+                                item-text="value"
+                                :hide-details="true"
+                                dense
+                                outlined
+                                required
+                                :error-messages="roleUpdateErrors"
+                                @change="$v.paramUpdate.role.$touch()"
+                                @blur="$v.paramUpdate.role.$touch()"
+                            />
+                        </v-col>
+                    </v-row>
+                </v-container>
+                <v-card-actions>
+                    <v-btn
+                        @click="ClearValidateUpdate"
+                    >Cancel</v-btn>
+                    <v-btn
+                        color="primary"
+                        @click="UpdateUser(idUpdate)"
+                    >Update</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </Layout>
 </template>
 
@@ -175,10 +262,12 @@
                 tableData :[],
                 isLoadingTable:false,
                 diaLogcreateUser:false,
+                diaLogUpdateUser:false,
                 snackbar: false,
                 snackbarText:'',
                 colors:'',
                 errExistEmailCreate:false,
+                errExistEmailUpdate:false,
                 headers: [
                     { text: 'No', value: 'duration'},
                     { text: 'Full Name', value: 'full_name' },
@@ -193,12 +282,25 @@
                     team_id : '',
                     role : '',
                 },
+                paramUpdate : {
+                    full_name : '',
+                    email : '',
+                    team_id : '',
+                    role : '',
+                },
+                idUpdate:'',
                 roleCreate : SYSTEM_ROLE,
                 allTeam: [],
             }
         },
         validations : {
             paramCreate : {
+                full_name : { required, maxLength: maxLength(127) },
+                email : { required, email},
+                team_id : { required },
+                role : { required },
+            },
+            paramUpdate : {
                 full_name : { required, maxLength: maxLength(127) },
                 email : { required, email},
                 team_id : { required },
@@ -235,6 +337,32 @@
                 const errors = [];
                 if (!this.$v.paramCreate.role.$dirty) return errors;
                 !this.$v.paramCreate.role.required && errors.push('Role is required');
+                return errors
+            },
+            FullnameUpdateErrors () {
+                const errors = [];
+                if (!this.$v.paramUpdate.full_name.$dirty) return errors;
+                !this.$v.paramUpdate.full_name.maxLength && errors.push('FullName must be at most 10 characters long');
+                !this.$v.paramUpdate.full_name.required && errors.push('FullName is required.');
+                return errors
+            },
+            emailUpdateErrors () {
+                const errors = [];
+                if (!this.$v.paramUpdate.email.$dirty) return errors;
+                !this.$v.paramUpdate.email.email && errors.push('Must be valid e-mail');
+                !this.$v.paramUpdate.email.required && errors.push('E-mail is required');
+                return errors
+            },
+            teamUpdateErrors () {
+                const errors = [];
+                if (!this.$v.paramUpdate.team_id.$dirty) return errors;
+                !this.$v.paramUpdate.team_id.required && errors.push('Team is required');
+                return errors
+            },
+            roleUpdateErrors () {
+                const errors = [];
+                if (!this.$v.paramUpdate.role.$dirty) return errors;
+                !this.$v.paramUpdate.role.required && errors.push('Role is required');
                 return errors
             },
         },
@@ -285,7 +413,7 @@
                 .get('/api/teams')
                 .then(res=> {
                     var TeamDefault = [{
-                        'id':'0',
+                        'id':0,
                         'title':'None'
                     }];
                     this.allTeam = TeamDefault.concat(res.data.data)
@@ -295,14 +423,17 @@
                 });
             },
             CreateUser() {
-                this.$v.$touch();
-                if (!this.$v.$invalid) {
+                this.$v.paramCreate.$touch();
+                if (!this.$v.paramCreate.$invalid) {
                     const paramsCreate= Object.keys(this.paramCreate).reduce((prev, key) => {
                         if(this.paramCreate[key] !== null) {
                             prev[key] = this.paramCreate[key];
                         }
                         return prev;
                     }, {});
+                    if (paramsCreate.team_id == 0 ) {
+                        delete paramsCreate.team_id;
+                    }
                     this.axios
                         .post('/api/users', paramsCreate)
                         .then(res => {
@@ -310,7 +441,7 @@
                             this.diaLogcreateUser = false;
                             this.errExistEmailCreate=false;
                             this.ClearDateInsert();
-                            this.$v.$reset();
+                            this.$v.paramCreate.$reset();
                             this.snackbar =  true;
                             this.snackbarText = 'Add User Success';
                             this.colors = 'success';
@@ -319,10 +450,61 @@
                             if (err.response.status === 422) {
                                 this.errExistEmailCreate=true;
                             } else {
+                                this.$v.paramCreate.$reset();
                                 this.diaLogcreateUser = false;
                                 this.ClearDateInsert();
                                 this.snackbar =  true;
                                 this.snackbarText = 'Add User False';
+                                this.colors = 'error';
+                            }
+                        });
+                }
+            },
+            GetDataUpdateUser(user) {
+                this.paramUpdate.full_name = user.full_name;
+                this.paramUpdate.email = user.email;
+                this.paramUpdate.role = SYSTEM_ROLE.filter(role =>role.value === user.role)[0].key;
+                this.idUpdate = user.id;
+                if (user.available_team.length > 0) {
+                    this.paramUpdate.team_id = this.allTeam.filter(team =>team.title === user.available_team[0].title)[0].id;
+                } else {
+                    this.paramUpdate.team_id = this.allTeam[0].id;
+                }
+                this.diaLogUpdateUser = true;
+            },
+            UpdateUser(id) {
+                this.$v.paramUpdate.$touch();
+                if (!this.$v.paramUpdate.$invalid) {
+                    const paramsUpdate= Object.keys(this.paramUpdate).reduce((prev, key) => {
+                        if(this.paramUpdate[key] !== null ) {
+                            prev[key] = this.paramUpdate[key];
+                        }
+                        return prev;
+                    }, {});
+                    if (paramsUpdate.team_id == 0 ) {
+                        delete paramsUpdate.team_id;
+                    }
+                    this.axios
+                        .put(`/api/users/${id}`, paramsUpdate)
+                        .then(res => {
+                            this.renderData();
+                            this.diaLogUpdateUser = false;
+                            this.errExistEmailUpdate=false;
+                            this.ClearDateUpdate();
+                            this.$v.paramUpdate.$reset();
+                            this.snackbar =  true;
+                            this.snackbarText = 'Update User Success';
+                            this.colors = 'success';
+                        })
+                        .catch((err)=> {
+                            if (err.response.status === 422) {
+                                this.errExistEmailUpdate=true;
+                            } else {
+                                this.$v.paramUpdate.$reset();
+                                this.diaLogUpdateUser = false;
+                                this.ClearDateUpdate;
+                                this.snackbar =  true;
+                                this.snackbarText = 'Update User False';
                                 this.colors = 'error';
                             }
                         });
@@ -336,12 +518,27 @@
             },
             ClearValidateCreate() {
                 this.diaLogcreateUser=false;
-                this.$v.$reset();
+                this.$v.paramCreate.$reset();
                 this.paramCreate.full_name='';
                 this.paramCreate.email='';
                 this.paramCreate.team_id='';
                 this.paramCreate.role='';
                 this.errExistEmailCreate=false;
+            },
+            ClearDateUpdate() {
+                this.paramUpdate.full_name='';
+                this.paramUpdate.email='';
+                this.paramUpdate.team_id='';
+                this.paramUpdate.role='';
+            },
+            ClearValidateUpdate() {
+                this.diaLogUpdateUser=false;
+                this.$v.paramUpdate.$reset();
+                this.paramUpdate.full_name='';
+                this.paramUpdate.email='';
+                this.paramUpdate.team_id='';
+                this.paramUpdate.role='';
+                this.errExistEmailUpdate=false;
             },
             inputDebounce: debounce(function(value) {
                 this.keyword = value;
