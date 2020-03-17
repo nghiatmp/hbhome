@@ -4,11 +4,9 @@
             <v-snackbar
                 v-model="snackbar"
                 :color="colors"
-                :multi-line="mode === 'multi-line'"
                 :right="true"
                 :timeout="2500"
                 :top="true"
-                :vertical="mode === 'vertical'"
             >
                 {{ snackbarText }}
                 <v-btn
@@ -85,22 +83,38 @@
                         <v-col class="align-center " cols="12">
                                 <v-text-field
                                     v-model="paramCreate.full_name"
+                                    :error-messages="FullnameCreateErrors"
                                     placeholder="Name"
                                     dense
                                     outlined
+                                    required
+                                    @input="$v.paramCreate.full_name.$touch()"
+                                    @blur="$v.paramCreate.full_name.$touch()"
                                 />
                         </v-col>
                         <v-col class="align-center justify-space-between" cols="12">
                                 <v-text-field
                                     v-model="paramCreate.email"
+                                    :error-messages="emailCreateErrors"
                                     placeholder="Email"
                                     dense
                                     outlined
+                                    required
+                                    @input="$v.paramCreate.email.$touch()"
+                                    @blur="$v.paramCreate.email.$touch()"
                                 />
+                            <div class="v-text-field__details" v-if="errExistEmailCreate">
+                                <div class="v-messages theme--light error--text" role="alert">
+                                    <div class="v-messages__wrapper">
+                                        <div class="v-messages__message">This email has already been set for another user</div>
+                                    </div>
+                                </div>
+                            </div>
                         </v-col>
                         <v-col class="align-center justify-space-between" cols="12">
                             <v-select
                                 v-model="paramCreate.team_id"
+                                :error-messages="teamCreateErrors"
                                 :items="allTeam"
                                 label="Team"
                                 item-value="id"
@@ -108,6 +122,9 @@
                                 :hide-details="true"
                                 dense
                                 outlined
+                                required
+                                @change="$v.paramCreate.team_id.$touch()"
+                                @blur="$v.paramCreate.team_id.$touch()"
                             />
                         </v-col>
                         <v-col class="align-center justify-space-between" cols="12">
@@ -120,13 +137,17 @@
                                 :hide-details="true"
                                 dense
                                 outlined
+                                required
+                                :error-messages="roleCreateErrors"
+                                @change="$v.paramCreate.role.$touch()"
+                                @blur="$v.paramCreate.role.$touch()"
                             />
                         </v-col>
                     </v-row>
                 </v-container>
                 <v-card-actions>
                     <v-btn
-                        @click="diaLogcreateUser = false"
+                        @click="ClearValidateCreate"
                     >Cancel</v-btn>
                     <v-btn
                         color="primary"
@@ -142,7 +163,10 @@
     import Layout from '../../components/Layout/index';
     import { SYSTEM_ROLE } from '../../constants/common';
     import { debounce } from 'debounce';
+    import { required, maxLength,email } from 'vuelidate/lib/validators';
+    import { validationMixin } from 'vuelidate'
     export default {
+        mixins: [validationMixin],
         name: 'Index',
         components: { Layout },
         data() {
@@ -154,6 +178,7 @@
                 snackbar: false,
                 snackbarText:'',
                 colors:'',
+                errExistEmailCreate:false,
                 headers: [
                     { text: 'No', value: 'duration'},
                     { text: 'Full Name', value: 'full_name' },
@@ -172,11 +197,45 @@
                 allTeam: [],
             }
         },
+        validations : {
+            paramCreate : {
+                full_name : { required, maxLength: maxLength(127) },
+                email : { required, email},
+                team_id : { required },
+                role : { required },
+            },
+        },
         computed: {
             paramsChangeToRender() {
                 return {
                     keyword : this.keyword,
                 };
+            },
+            FullnameCreateErrors () {
+                const errors = [];
+                if (!this.$v.paramCreate.full_name.$dirty) return errors;
+                !this.$v.paramCreate.full_name.maxLength && errors.push('FullName must be at most 10 characters long');
+                !this.$v.paramCreate.full_name.required && errors.push('FullName is required.');
+                return errors
+            },
+            emailCreateErrors () {
+                const errors = [];
+                if (!this.$v.paramCreate.email.$dirty) return errors;
+                !this.$v.paramCreate.email.email && errors.push('Must be valid e-mail');
+                !this.$v.paramCreate.email.required && errors.push('E-mail is required');
+                return errors
+            },
+            teamCreateErrors () {
+                const errors = [];
+                if (!this.$v.paramCreate.team_id.$dirty) return errors;
+                !this.$v.paramCreate.team_id.required && errors.push('Team is required');
+                return errors
+            },
+            roleCreateErrors () {
+                const errors = [];
+                if (!this.$v.paramCreate.role.$dirty) return errors;
+                !this.$v.paramCreate.role.required && errors.push('Role is required');
+                return errors
             },
         },
         watch:{
@@ -236,35 +295,53 @@
                 });
             },
             CreateUser() {
-                const paramsCreate= Object.keys(this.paramCreate).reduce((prev, key) => {
-                    if(this.paramCreate[key] !== null) {
-                        prev[key] = this.paramCreate[key];
-                    }
-                    return prev;
-                }, {});
-                this.axios
-                .post('/api/users', paramsCreate)
-                .then(res => {
-                    this.renderData();
-                    this.diaLogcreateUser = false;
-                    this.ClearDateInsert();
-                    this.snackbar =  true;
-                    this.snackbarText = 'Add User Success';
-                    this.colors = 'success';
-                })
-                .catch(()=> {
-                    this.diaLogcreateUser = false;
-                    this.ClearDateInsert();
-                    this.snackbar =  true;
-                    this.snackbarText = 'Add User False';
-                    this.colors = 'error';
-                });
+                this.$v.$touch();
+                if (!this.$v.$invalid) {
+                    const paramsCreate= Object.keys(this.paramCreate).reduce((prev, key) => {
+                        if(this.paramCreate[key] !== null) {
+                            prev[key] = this.paramCreate[key];
+                        }
+                        return prev;
+                    }, {});
+                    this.axios
+                        .post('/api/users', paramsCreate)
+                        .then(res => {
+                            this.renderData();
+                            this.diaLogcreateUser = false;
+                            this.errExistEmailCreate=false;
+                            this.ClearDateInsert();
+                            this.$v.$reset();
+                            this.snackbar =  true;
+                            this.snackbarText = 'Add User Success';
+                            this.colors = 'success';
+                        })
+                        .catch((err)=> {
+                            if (err.response.status === 422) {
+                                this.errExistEmailCreate=true;
+                            } else {
+                                this.diaLogcreateUser = false;
+                                this.ClearDateInsert();
+                                this.snackbar =  true;
+                                this.snackbarText = 'Add User False';
+                                this.colors = 'error';
+                            }
+                        });
+                }
             },
             ClearDateInsert() {
                 this.paramCreate.full_name='';
                 this.paramCreate.email='';
                 this.paramCreate.team_id='';
                 this.paramCreate.role='';
+            },
+            ClearValidateCreate() {
+                this.diaLogcreateUser=false;
+                this.$v.$reset();
+                this.paramCreate.full_name='';
+                this.paramCreate.email='';
+                this.paramCreate.team_id='';
+                this.paramCreate.role='';
+                this.errExistEmailCreate=false;
             },
             inputDebounce: debounce(function(value) {
                 this.keyword = value;

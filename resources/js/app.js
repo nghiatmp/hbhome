@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueAxios from 'vue-axios';
 import App from './App.vue';
 import VueAuth from '@websanova/vue-auth';
+import Vuelidate from 'vuelidate';
 import router from './routes';
 import store from './store';
 import axios from 'axios';
@@ -21,6 +22,7 @@ Vue.use(VueAxios, axios);
 Vue.use(Vuetify);
 Vue.use(VueRouter);
 Vue.use(VueAuth, auth);
+Vue.use(Vuelidate);
 
 
 new Vue({
