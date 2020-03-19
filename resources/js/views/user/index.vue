@@ -414,9 +414,21 @@
                 .then(res=> {
                     var TeamDefault = [{
                         'id':0,
-                        'title':'None'
+                        'title':'None',
+                        'children':[],
                     }];
-                    this.allTeam = TeamDefault.concat(res.data.data)
+                    const dataTeam = TeamDefault.concat(res.data.data);
+                    Object.values(dataTeam).forEach(key => {
+                        if (key.children.length > 0) {
+                            this.allTeam.push(key);
+                            Object.values(key.children).forEach(item =>{
+                                item.title = key.title+'-'+item.title;
+                                this.allTeam.push(item);
+                            })
+                        }else {
+                            this.allTeam.push(key);
+                        }
+                    });
                 })
                 .catch(()=>{
                     this.allTeam = [];
@@ -461,15 +473,17 @@
                 }
             },
             GetDataUpdateUser(user) {
+                console.log(user);
                 this.paramUpdate.full_name = user.full_name;
                 this.paramUpdate.email = user.email;
                 this.paramUpdate.role = SYSTEM_ROLE.filter(role =>role.value === user.role)[0].key;
                 this.idUpdate = user.id;
                 if (user.available_team.length > 0) {
-                    this.paramUpdate.team_id = this.allTeam.filter(team =>team.title === user.available_team[0].title)[0].id;
+                    this.paramUpdate.team_id = this.allTeam.filter(team =>team.id === user.available_team[0].id)[0].id;
                 } else {
                     this.paramUpdate.team_id = this.allTeam[0].id;
                 }
+
                 this.diaLogUpdateUser = true;
             },
             UpdateUser(id) {
