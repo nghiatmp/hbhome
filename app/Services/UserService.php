@@ -171,4 +171,9 @@ class UserService
     {
         return $this->user->whereNotIn('id', $userIDs)->get()->toArray();
     }
+
+    public function getAllUser()
+    {
+        return $this->user->get();
+    }
 }

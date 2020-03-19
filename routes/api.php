@@ -59,6 +59,7 @@ Route::group([
             'middleware' => ['auth.jwt', 'systemRole:ADMIN|LEADER|MEMBER'],
         ], function () {
             Route::get('suggest', 'SuggestController@main');
+            Route::get('suggestuser', 'IndexController@getAll');
         });
 
         Route::group([

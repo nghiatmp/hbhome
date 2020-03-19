@@ -1,6 +1,22 @@
 <template>
     <Layout>
         <v-card>
+            <v-snackbar
+                v-model="snackbar"
+                :color="colors"
+                :right="true"
+                :timeout="2500"
+                :top="true"
+            >
+                {{ snackbarText }}
+                <v-btn
+                    dark
+                    text
+                    @click="snackbar = false"
+                >
+                    Close
+                </v-btn>
+            </v-snackbar>
             <v-card>
                 <v-row>
                     <v-col class="mt-2 ml-6" cols="3" md="3" sm="12">
@@ -18,7 +34,7 @@
                             <v-btn
                                 depressed
                                 color="primary"
-                                @click="createProject"
+                                @click="diaLogcreateProject = true"
                             >
                                 Create Project
                             </v-btn>
@@ -72,6 +88,9 @@
                                 dense
                                 outlined
                                 required
+                                :error-messages="TitleCreateErrors"
+                                @input="$v.paramCreate.title.$touch()"
+                                @blur="$v.paramCreate.title.$touch()"
                             />
                         </v-col>
                         <v-col class="align-center justify-space-between" cols="6">
@@ -81,8 +100,17 @@
                                 dense
                                 outlined
                                 required
-                                @input="inputPm"
+                                :error-messages="KeyCreateErrors"
+                                @input="$v.paramCreate.key.$touch()"
+                                @blur="$v.paramCreate.key.$touch()"
                             />
+                            <div class="v-text-field__details" v-if="errExistKeyCreate">
+                                <div class="v-messages theme--light error--text" role="alert">
+                                    <div class="v-messages__wrapper">
+                                        <div class="v-messages__message">This key has already been set for another project</div>
+                                    </div>
+                                </div>
+                            </div>
                         </v-col>
                         <v-col class="align-center justify-space-between" cols="6">
                             <v-select
@@ -95,6 +123,9 @@
                                 dense
                                 outlined
                                 required
+                                :error-messages="ContractCreateErrors"
+                                @change="$v.paramCreate.contract.$touch()"
+                                @blur="$v.paramCreate.contract.$touch()"
                             />
                         </v-col>
                         <v-col class="align-center justify-space-between" cols="6">
@@ -108,6 +139,9 @@
                                 dense
                                 outlined
                                 required
+                                :error-messages="RankCreateErrors"
+                                @change="$v.paramCreate.rank.$touch()"
+                                @blur="$v.paramCreate.rank.$touch()"
                             />
                         </v-col>
                         <v-col class="align-center justify-space-between" cols="6">
@@ -121,18 +155,22 @@
                                 dense
                                 outlined
                                 required
+                                :error-messages="TeamCreateErrors"
+                                @change="$v.paramCreate.team_id.$touch()"
+                                @blur="$v.paramCreate.team_id.$touch()"
                             />
                         </v-col>
                         <v-col class="align-center justify-space-between" cols="6">
                             <v-autocomplete
                                 v-model="paramCreate.rank"
-                                :items="rankCreate"
+                                :items="dataPM"
                                 label="PM"
                                 :hide-details="true"
                                 dense
                                 outlined
-                                required
-                                @input="inputPm"
+                                clearable
+                                item-text="email"
+                                item-value="id"
                             />
                         </v-col>
                         <v-col class="align-center" cols="12">
@@ -141,19 +179,18 @@
                                 label="Note"
                                 dense
                                 outlined
-                                required
                             />
                         </v-col>
                     </v-row>
                 </v-container>
                 <v-card-actions>
                     <v-btn
-                        @click=""
+                        @click="ClearValidateCreate"
                     >Cancel</v-btn>
                     <v-btn
                         color="primary"
-                        @click=""
-                    >Save</v-btn>
+                        @click="createProject"
+                    >Create Project</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -162,6 +199,7 @@
 
 <script>
     import Layout from '../../components/Layout/index';
+    import { required, maxLength } from 'vuelidate/lib/validators';
     import { debounce } from 'debounce';
     import { PROJECT_STATUS } from '../../constants/common';
     import { PROJECT_RANK,PROJECT_CONTRACT } from '../../constants/common';
@@ -171,16 +209,20 @@
         data() {
             return {
                 keyword: '',
-                keywordPM:'',
+                dataPM: '',
                 isLoadingTable: false,
                 tableData:[],
                 diaLogcreateProject:false,
+                errExistKeyCreate:false,
+                snackbar: false,
+                snackbarText:'',
+                colors:'',
                 paramCreate : {
                     title:'',
                     key:'',
                     contract:'',
                     rank:'',
-                    note:'',
+                    note: null,
                     team_id:'',
                     admin_id:'',
                 },
@@ -205,11 +247,46 @@
                     keyword : this.keyword,
                 };
             },
-            ChangePM() {
-                return {
-                    keywordPM : this.keywordPM,
-                }
-            }
+            TitleCreateErrors () {
+                const errors = [];
+                if (!this.$v.paramCreate.title.$dirty) return errors;
+                !this.$v.paramCreate.title.maxLength && errors.push('Title max 127 characters long');
+                !this.$v.paramCreate.title.required && errors.push('Title is required.');
+                return errors
+            },
+            KeyCreateErrors () {
+                const errors = [];
+                if (!this.$v.paramCreate.key.$dirty) return errors;
+                !this.$v.paramCreate.key.required && errors.push('Key is required');
+                return errors
+            },
+            ContractCreateErrors () {
+                const errors = [];
+                if (!this.$v.paramCreate.contract.$dirty) return errors;
+                !this.$v.paramCreate.contract.required && errors.push('Contract is required');
+                return errors
+            },
+            TeamCreateErrors () {
+                const errors = [];
+                if (!this.$v.paramCreate.team_id.$dirty) return errors;
+                !this.$v.paramCreate.team_id.required && errors.push('Team is required');
+                return errors
+            },
+            RankCreateErrors () {
+                const errors = [];
+                if (!this.$v.paramCreate.rank.$dirty) return errors;
+                !this.$v.paramCreate.rank.required && errors.push('Rank is required');
+                return errors
+            },
+        },
+        validations : {
+            paramCreate : {
+                title : { required, maxLength: maxLength(127) },
+                key : { required},
+                contract : {required},
+                rank: {required},
+                team_id : { required },
+            },
         },
         watch : {
             paramsChangeToRender: {
@@ -218,16 +295,11 @@
                 },
                 deep: true,
             },
-            ChangePM: {
-                handler() {
-                    this.getPM();
-                },
-                deep: true,
-            },
         },
         created() {
             this.renderData();
             this.getAllTeam();
+            this.getPM();
         },
         methods : {
             renderData() {
@@ -261,7 +333,37 @@
                 this.keyword = value;
             }, 250),
             createProject() {
-                this.diaLogcreateProject = true;
+                this.$v.paramCreate.$touch();
+                if (!this.$v.paramCreate.$invalid) {
+                    const paramsCreate = Object.keys(this.paramCreate).reduce((prev, key) => {
+                        if (this.paramCreate[key] !== '') {
+                            prev[key] = this.paramCreate[key];
+                        }
+                        return prev;
+                    }, {});
+                    this.axios
+                        .post('/api/projects', paramsCreate)
+                        .then(res => {
+                            this.renderData();
+                            this.diaLogcreateProject = false;
+                            this.errExistEmailCreate = false;
+                            this.ClearValidateCreate();
+                            this.snackbar = true;
+                            this.snackbarText = 'Add Project Success';
+                            this.colors = 'success';
+                        })
+                        .catch((err) => {
+                            if (err.response.status === 422) {
+                                this.errExistKeyCreate = true;
+                            } else {
+                                this.ClearValidateCreate;
+                                this.diaLogcreateUser = false;
+                                this.snackbar = true;
+                                this.snackbarText = 'Add Project False';
+                                this.colors = 'error';
+                            }
+                        });
+                }
             },
             getAllTeam() {
                 this.axios
@@ -282,22 +384,36 @@
                     });
             },
             getPM(){
-                const params = {};
-                params.keyword = this.keywordPM;
-                console.log(params);
                 this.axios
-                    .get('/api/users/suggest', {params})
+                    .get('/api/users/suggestuser')
                     .then(res=> {
-                        const dataPm = res.data.data;
-                            console.log(dataPm);
+                        this.dataPM = res.data;
                     })
                     .catch(()=>{
-                        this.allTeam = [];
+                        this.dataPM = [];
                     });
             },
-            inputPm: debounce(function(value) {
-                this.keywordPM = value;
-            }, 250),
+            ClearDateInsert() {
+                this.paramCreate.title='';
+                this.paramCreate.key='';
+                this.paramCreate.team_id='';
+                this.paramCreate.rank='';
+                this.paramCreate.contract='';
+                this.paramCreate.admin_id='';
+                this.paramCreate.note='';
+            },
+            ClearValidateCreate() {
+                this.diaLogcreateProject=false;
+                this.$v.paramCreate.$reset();
+                this.paramCreate.title='';
+                this.paramCreate.key='';
+                this.paramCreate.team_id='';
+                this.paramCreate.rank='';
+                this.paramCreate.contract='';
+                this.paramCreate.admin_id='';
+                this.paramCreate.note='';
+                this.errExistKeyCreate = false;
+            },
         }
     };
 </script>
