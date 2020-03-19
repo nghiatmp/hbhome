@@ -17,7 +17,7 @@ class IndexController extends Controller
     {
         $this->userService = $userService;
     }
-    
+
     /**
      * Index
      * Get list users
@@ -44,6 +44,12 @@ class IndexController extends Controller
     public function main(Request $request)
     {
         $responseData = $this->userService->index();
+        return response()->json($responseData, 200);
+    }
+
+    public function getAll()
+    {
+        $responseData = $this->userService->getAllUser();
         return response()->json($responseData, 200);
     }
 }
