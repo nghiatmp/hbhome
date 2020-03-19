@@ -31,13 +31,13 @@
                 </v-col>
                 <v-col cols="3" md="3" sm="0"></v-col>
                 <v-col class="mt-4" cols="5">
-                    <div class="d-flex justify-end mr-4" flat tile>
+                    <div class="d-flex justify-end" flat tile>
                         <v-btn
                             depressed
                             color="primary"
                             @click="diaLogcreateUser = true"
                             >
-                            Create
+                            Create User
                         </v-btn>
                     </div>
                 </v-col>
@@ -71,7 +71,7 @@
         </v-card>
         <v-dialog
             v-model="diaLogcreateUser"
-            width="560px"
+            width="750px"
             height="600px"
         >
             <v-card>
@@ -80,11 +80,11 @@
                 </v-card-title>
                 <v-container>
                     <v-row class="mx-2">
-                        <v-col class="align-center " cols="12">
+                        <v-col class="align-center justify-space-between" cols="6">
                                 <v-text-field
                                     v-model="paramCreate.full_name"
                                     :error-messages="FullnameCreateErrors"
-                                    placeholder="Name"
+                                    label="Name"
                                     dense
                                     outlined
                                     required
@@ -92,11 +92,11 @@
                                     @blur="$v.paramCreate.full_name.$touch()"
                                 />
                         </v-col>
-                        <v-col class="align-center justify-space-between" cols="12">
+                        <v-col class="align-center justify-space-between" cols="6">
                                 <v-text-field
                                     v-model="paramCreate.email"
                                     :error-messages="emailCreateErrors"
-                                    placeholder="Email"
+                                    label="Email"
                                     dense
                                     outlined
                                     required
@@ -111,7 +111,7 @@
                                 </div>
                             </div>
                         </v-col>
-                        <v-col class="align-center justify-space-between" cols="12">
+                        <v-col class="align-center justify-space-between" cols="6">
                             <v-select
                                 v-model="paramCreate.team_id"
                                 :error-messages="teamCreateErrors"
@@ -127,7 +127,7 @@
                                 @blur="$v.paramCreate.team_id.$touch()"
                             />
                         </v-col>
-                        <v-col class="align-center justify-space-between" cols="12">
+                        <v-col class="align-center justify-space-between" cols="6">
                             <v-select
                                 v-model="paramCreate.role"
                                 :items="roleCreate"
@@ -152,13 +152,13 @@
                     <v-btn
                         color="primary"
                         @click="CreateUser"
-                    >Save</v-btn>
+                    >Create User</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
         <v-dialog
             v-model="diaLogUpdateUser"
-            width="560px"
+            width="750px"
             height="600px"
         >
             <v-card>
@@ -167,11 +167,11 @@
                 </v-card-title>
                 <v-container>
                     <v-row class="mx-2">
-                        <v-col class="align-center " cols="12">
+                        <v-col class="align-center " cols="6">
                             <v-text-field
                                 v-model="paramUpdate.full_name"
                                 :error-messages="FullnameUpdateErrors"
-                                placeholder="Name"
+                                label="Name"
                                 dense
                                 outlined
                                 required
@@ -179,11 +179,11 @@
                                 @blur="$v.paramUpdate.full_name.$touch()"
                             />
                         </v-col>
-                        <v-col class="align-center justify-space-between" cols="12">
+                        <v-col class="align-center justify-space-between" cols="6">
                             <v-text-field
                                 v-model="paramUpdate.email"
                                 :error-messages="emailUpdateErrors"
-                                placeholder="Email"
+                                label="Email"
                                 dense
                                 outlined
                                 required
@@ -198,7 +198,7 @@
                                 </div>
                             </div>
                         </v-col>
-                        <v-col class="align-center justify-space-between" cols="12">
+                        <v-col class="align-center justify-space-between" cols="6">
                             <v-select
                                 v-model="paramUpdate.team_id"
                                 :error-messages="teamUpdateErrors"
@@ -214,7 +214,7 @@
                                 @blur="$v.paramUpdate.team_id.$touch()"
                             />
                         </v-col>
-                        <v-col class="align-center justify-space-between" cols="12">
+                        <v-col class="align-center justify-space-between" cols="6">
                             <v-select
                                 v-model="paramUpdate.role"
                                 :items="roleCreate"
@@ -239,7 +239,7 @@
                     <v-btn
                         color="primary"
                         @click="UpdateUser(idUpdate)"
-                    >Update</v-btn>
+                    >Update User</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
