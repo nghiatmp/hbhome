@@ -1,0 +1,20 @@
+
+s	php:S1192;"_Define a constant instead of duplicating this literal "systemRole:ADMIN|LEADER|MEMBER" 5 times.(œúŠ
+a	php:S1192"LDefine a constant instead of duplicating this literal "middleware" 30 times.(„Èßº
+k	php:S1192/"VDefine a constant instead of duplicating this literal "SearchController@main" 3 times.(øşĞ™
+m	php:S1192»"RDefine a constant instead of duplicating this literal "projectRole:ADMIN" 4 times.(‘ÏÂÔøÿÿÿÿ
+d	php:S1192["JDefine a constant instead of duplicating this literal "checkTeam" 3 times.(Í–¼şÿÿÿÿ
+\	php:S1192/"GDefine a constant instead of duplicating this literal "search" 3 times.(øşĞ™
+`	php:S1192"KDefine a constant instead of duplicating this literal "namespace" 15 times.(¸­Üš
+b	php:S1192"HDefine a constant instead of duplicating this literal "prefix" 14 times.(Ì¶Òÿûÿÿÿÿ
+o	php:S11921"UDefine a constant instead of duplicating this literal "StoreController@main" 6 times.(™´´äÿÿÿÿÿ
+f	php:S1192,"QDefine a constant instead of duplicating this literal "systemRole:ADMIN" 9 times.(Ú¯
+q	php:S1192e"WDefine a constant instead of duplicating this literal "DestroyController@main" 5 times.(Ş…¾Èøÿÿÿÿ
+‘php:S138"xThis function expression has 235 lines, which is greater than the 150 lines authorized. Split it into smaller functions.(«ÊŸùÿÿÿÿ
+v	php:S1192„"`Define a constant instead of duplicating this literal "systemRole:ADMIN|MEMBER|LEADER" 10 times.(ªè‡ô
+d	php:S1192""JDefine a constant instead of duplicating this literal "auth.jwt" 29 times.( èŠÆşÿÿÿÿ
+e	php:S1192Ú"JDefine a constant instead of duplicating this literal "{phaseId}" 3 times.(¸ÊÖëøÿÿÿÿ
+j	php:S11927"VDefine a constant instead of duplicating this literal "UpdateController@main" 9 times.(¡¤¸
+i	php:S1192."UDefine a constant instead of duplicating this literal "IndexController@main" 7 times.(Ì¨ë
+r	php:S1192["XDefine a constant instead of duplicating this literal "systemRole:ADMIN|LEADER" 3 times.(Í–¼şÿÿÿÿ
+p	php:S1192F"VDefine a constant instead of duplicating this literal "EffortController@main" 3 times.( £òøÿÿÿÿ

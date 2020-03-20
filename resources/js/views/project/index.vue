@@ -54,11 +54,16 @@
                             class="elevation-4 mb-4"
                             locale="US"
                         >
-                                <template v-slot:item.id="{ item }">
-                                    <v-layout justify-center>
-                                        <i class="far fa-edit" @click="GetDataUpdateProject(item)"></i>
-                                    </v-layout>
-                                </template>
+                            <template v-slot:item.title="{ item }">
+                                <v-layout>
+                                    <router-link :to="`/projects/${item.id}`" v-html="item.title"></router-link>
+                                </v-layout>
+                            </template>
+                            <template v-slot:item.id="{ item }">
+                                <v-layout justify-center>
+                                    <i class="far fa-edit" @click="GetDataUpdateProject(item)"></i>
+                                </v-layout>
+                            </template>
                         </v-data-table>
                     </v-card>
                 </v-card>
@@ -624,6 +629,9 @@
                 this.paramUpdate.note='';
                 this.errExistKeyUpdate = false;
             },
+            redirectProjectDetail(id) {
+                this.$router.push({ path: `/projects/${id}` });
+            }
         }
     };
 </script>

@@ -26,11 +26,11 @@
                             class="elevation-4 mb-4"
                             locale="US"
                         >
-<!--                            <template v-slot:item.available_team="{ item }">-->
-<!--                                <div v-if="item.available_team.length > 0">-->
-<!--                                    <p v-html="item.available_team[0].title"></p>-->
-<!--                                </div>-->
-<!--                            </template>-->
+                            <template v-slot:item.project_name="{ item }">
+                                <v-layout>
+                                    <router-link :to="`/projects/${item.id}`" v-html="item.project_name"></router-link>
+                                </v-layout>
+                            </template>
                         </v-data-table>
                     </v-card>
                 </v-card>

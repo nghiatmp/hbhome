@@ -10,6 +10,7 @@ import VueRouter from 'vue-router';
 import Vuetify from 'vuetify';
 import vuetify from './plugins/vuetify';
 import auth from './auth';
+import HighchartsVue from 'highcharts-vue'
 
 require('./bootstrap');
 
@@ -23,6 +24,7 @@ Vue.use(Vuetify);
 Vue.use(VueRouter);
 Vue.use(VueAuth, auth);
 Vue.use(Vuelidate);
+Vue.use(HighchartsVue)
 
 
 new Vue({

@@ -25,6 +25,11 @@
                         class="elevation-4 mb-4"
                         locale="US"
                     >
+                        <template v-slot:item.title="{ item }">
+                            <v-layout>
+                                <router-link :to="`/projects/${item.id}`" v-html="item.title"></router-link>
+                            </v-layout>
+                        </template>
                     </v-data-table>
                 </v-card>
             </v-card>
