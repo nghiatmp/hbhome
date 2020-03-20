@@ -4,7 +4,9 @@ import Login from './views/auth/login';
 import MyProjects from './views/myproject/index';
 import Teams from './views/team/index';
 import Projects from './views/project/index';
+import DetailProject from './views/project/detail';
 import Users from './views/user/index';
+import UserDetail from './views/user/detail';
 import Phases from './views/phase/index';
 import OverviewMM from './views/overviewmm/index';
 import OverviewAllocate from './views/overviewallocate/index';
@@ -30,8 +32,16 @@ const routes = [
         component: Projects,
     },
     {
+        path: '/projects/:proID',
+        component: DetailProject,
+    },
+    {
         path: '/users',
         component: Users,
+    },
+    {
+        path: '/users/:userID',
+        component: UserDetail,
     },
     {
         path: '/phases',

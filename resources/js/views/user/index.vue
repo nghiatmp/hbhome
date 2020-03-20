@@ -55,6 +55,11 @@
                         class="elevation-4 mb-4"
                         locale="US"
                     >
+                        <template v-slot:item.full_name="{ item }">
+                            <v-layout>
+                                <router-link :to="`/users/${item.id}`" v-html="item.full_name"></router-link>
+                            </v-layout>
+                        </template>
                         <template v-slot:item.available_team="{ item }">
                             <div v-if="item.available_team.length > 0">
                                 <p v-html="item.available_team[0].title"></p>
