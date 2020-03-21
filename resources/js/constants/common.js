@@ -37,3 +37,14 @@ export const PROJECT_CONTRACT = [
     {key : '2', value : 'LABOR' },
     {key : '3', value : 'BODY_SHOPPING' },
 ];
+
+export const PROJECT_ROLE = [
+    {key : '1', value : 'DEVELOPER' },
+    {key : '2', value : 'TESTER' },
+    {key : '3', value : 'BA' },
+    {key : '4', value : 'COMTOR' },
+    {key : '5', value : 'ACCOUNT' },
+    {key : '6', value : 'QA' },
+    {key : '7', value : 'OTHERS' },
+    {key : '15', value : 'ADMIN' },
+];
