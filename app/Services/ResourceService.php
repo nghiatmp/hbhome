@@ -66,11 +66,15 @@ class ResourceService
      * @param integer $projectId
      *
      */
-    public function index($projectId)
+    public function index($projectId, $params)
     {
         $resources = $this->resource
             ->with('user:id,full_name,email')
             ->where('project_id', $projectId)
+            ->when(!is_null($params['from']) && !is_null($params['to']), function ($query) use ($params) {
+                $query->where('from_at', '>=', $params['from']);
+                $query->where('to_at', '<=', $params['to']);
+            })
             ->get(['id', 'user_id', 'role', 'from_at', 'to_at', 'allocation'])
             ->toArray();
 

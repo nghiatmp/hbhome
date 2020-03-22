@@ -17,7 +17,7 @@ class IndexResourceController extends Controller
     {
         $this->resourceService = $resourceService;
     }
-    
+
     /**
      * Index resource
      * Get all resources in project
@@ -57,7 +57,28 @@ class IndexResourceController extends Controller
      */
     public function main(Request $request)
     {
-        $responseData = $this->resourceService->index($request->projectId);
+        $this->validation($request);
+        $params = $this->getParams($request);
+        $responseData = $this->resourceService->index($request->projectId, $params);
         return response()->json($responseData, 200);
+    }
+
+    protected function validation(Request $request)
+    {
+        return $request->validate([
+            'from' => 'nullable|date',
+            'to' => 'nullable|date',
+        ]);
+    }
+
+    protected function getParams(Request $request)
+    {
+        $params['from'] = null;
+        $params['to'] = null;
+        if ($request->has(['from', 'to'])) {
+            $params['from'] = $request->from;
+            $params['to'] = $request->to;
+        }
+        return $params;
     }
 }
