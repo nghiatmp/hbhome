@@ -37,7 +37,10 @@ export const PROJECT_CONTRACT = [
     {key : '2', value : 'LABOR' },
     {key : '3', value : 'BODY_SHOPPING' },
 ];
-
+export const MEMBER_STATUS = [
+    {key : '1', value : 'Active' },
+    {key : '0', value : 'InActive' },
+];
 export const PROJECT_ROLE = [
     {key : '1', value : 'DEVELOPER' },
     {key : '2', value : 'TESTER' },
