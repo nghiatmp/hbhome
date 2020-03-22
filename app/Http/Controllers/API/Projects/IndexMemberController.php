@@ -17,7 +17,7 @@ class IndexMemberController extends Controller
     {
         $this->projectUserService = $projectUserService;
     }
-    
+
     /**
      * Index member
      * Get all members in project
@@ -56,4 +56,5 @@ class IndexMemberController extends Controller
         $responseData = $this->projectUserService->index($request->projectId);
         return response()->json($responseData, 200);
     }
+
 }

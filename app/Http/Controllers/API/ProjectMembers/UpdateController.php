@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\ProjectMembers;
 
+use App\Enums\ProjectMemberStatus;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use BenSampo\Enum\Rules\EnumValue;
@@ -19,7 +20,7 @@ class UpdateController extends Controller
     {
         $this->projectUserService = $projectUserService;
     }
-    
+
     /**
      * Update
      * Update project member with given input
@@ -61,11 +62,12 @@ class UpdateController extends Controller
     {
         return $request->validate([
             'role' => ['required', new EnumValue(ProjectRole::class, false)],
+            'is_member' => ['required', new EnumValue(ProjectMemberStatus::class, false)],
         ]);
     }
 
     protected function getData(Request $request)
     {
-        return $request->only(['role']);
+        return $request->only(['role', 'is_member']);
     }
 }
