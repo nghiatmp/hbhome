@@ -430,7 +430,7 @@
 
 <script>
     import {Chart} from 'highcharts-vue'
-    import {PROJECT_CONTRACT, PROJECT_ROLE} from "../../constants/common";
+    import { PROJECT_ROLE} from "../../constants/common";
     import { required,integer,between} from "vuelidate/lib/validators";
     export default {
         data () {
