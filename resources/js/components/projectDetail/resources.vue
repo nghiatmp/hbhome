@@ -621,6 +621,7 @@
         },
         created(){
             this.getDefaultDate();
+            this.getUserCreateResource();
             this.renderData();
         },
         methods:{
@@ -659,11 +660,6 @@
                             key.role = PROJECT_ROLE.filter(role =>parseInt(role.key) === key.role)[0].value;
                         });
                         this.tableData = dataResource;
-                        const data = [];
-                        Object.values(dataResource).forEach(key=>{
-                               data.push(key.user);
-                        });
-                        this.UserCreate = Array.from(new Set(data.map(JSON.stringify))).map(JSON.parse);
                         this.isLoadingDataResource = false;
                     })
                     .catch(err=>{
@@ -684,6 +680,22 @@
                     })
                     .catch(err=>{
                         this.isLoading = false;
+                    });
+            },
+            getUserCreateResource(){
+                const ProjectID = this.ProjectID;
+                this.axios
+                    .get(`/api/projects/${ProjectID}/members`)
+                    .then(res=>{
+                        const dataMem =res.data.data;
+                        const data = [];
+                        Object.values(dataMem).forEach(key=>{
+                            data.push(key.user);
+                        });
+                        this.UserCreate = data;
+                    })
+                    .catch(err=>{
+                        this.UserCreate = [];
                     });
             },
             createResource() {
@@ -731,7 +743,6 @@
                         }
                         return prev;
                     }, {});
-                    // paramsCreate['resourceId'] = this.idResource;
                     const IdResource = this.idResourceUpdate;
                     this.axios
                         .put(`/api/resources/${IdResource}`, paramUpdate)

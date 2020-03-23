@@ -153,17 +153,28 @@
                     <v-container>
                         <v-row class="mx-2">
                             <v-col class="align-center justify-space-between" cols="6">
-                                <v-select
+                                <v-autocomplete
                                     v-model="paramCreate.user_id"
                                     :items="UserCreate"
                                     label="Select User"
-                                    item-value="key"
-                                    item-text="value"
+                                    item-text="email"
+                                    item-value="id"
                                     :hide-details="true"
                                     dense
                                     outlined
+                                    clearable
                                     required
+                                    :error-messages="UserCreateErrors"
+                                    @change="$v.paramCreate.user_id.$touch()"
+                                    @blur="$v.paramCreate.user_id.$touch()"
                                 />
+                                <div class="v-text-field__details mt-2" v-if="errExistUserInProject">
+                                    <div class="v-messages theme--light error--text" role="alert">
+                                        <div class="v-messages__wrapper">
+                                            <div class="v-messages__message">This User has already been set for project</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </v-col>
                             <v-col class="align-center justify-space-between" cols="6">
                                 <v-select
@@ -176,6 +187,9 @@
                                     dense
                                     outlined
                                     required
+                                    :error-messages="RoleCreateErrors"
+                                    @change="$v.paramCreate.role.$touch()"
+                                    @blur="$v.paramCreate.role.$touch()"
                                 />
                             </v-col>
                             <v-col cols="6" md="6" sm="6" v-if="addToResource">
@@ -198,9 +212,12 @@
                                             outlined
                                             dense
                                             v-on="on"
+                                            :error-messages="FromCreateErrors"
+                                            @change="$v.paramCreate.from_at.$touch()"
+                                            @blur="$v.paramCreate.from_at.$touch()"
                                         />
                                     </template>
-                                    <v-date-picker v-model="paramCreate.from_at" locale="UTC"  @input="menuFromCreate=false" />
+                                    <v-date-picker v-model="paramCreate.from_at" :min="minfrom" :max="maxto"  @input="menuFromCreate=false" />
                                 </v-menu>
                             </v-col>
                             <v-col cols="6" md="6" sm="6" v-if="addToResource">
@@ -223,27 +240,36 @@
                                             outlined
                                             dense
                                             v-on="on"
+                                            :error-messages="ToCreateErrors"
+                                            @change="$v.paramCreate.to_at.$touch()"
+                                            @blur="$v.paramCreate.to_at.$touch()"
+
                                         />
                                     </template>
-                                    <v-date-picker v-model="paramCreate.to_at"  @input="menuToCreate=false" />
+                                    <v-date-picker v-model="paramCreate.to_at" :min="minfrom" :max ="maxto" @input="menuToCreate=false" />
                                 </v-menu>
                             </v-col>
                             <v-col class="align-center" cols="12" v-if="addToResource">
                                 <v-text-field
-                                    v-model="paramCreate.note"
+                                    v-model="paramCreate.allocation"
                                     label="Allocation"
                                     dense
                                     outlined
+                                    :error-messages="AllocationCreateErrors"
+                                    @change="$v.paramCreate.allocation.$touch()"
+                                    @blur="$v.paramCreate.allocation.$touch()"
                                 />
                             </v-col>
-                            <v-switch v-model="addToResource" class="mx-2" label="Add To Resource"></v-switch>
+                            <v-switch v-model="addToResource" class="mx-2" label="Add To Resource" @change="change"></v-switch>
                         </v-row>
                     </v-container>
                     <v-card-actions>
                         <v-btn
+                            @click="ClearValidateCreate"
                         >Cancel</v-btn>
                         <v-btn
                             color="primary"
+                            @click = "createMember"
                         >Create Member</v-btn>
                     </v-card-actions>
                 </v-card>
@@ -335,6 +361,7 @@
                 Status: MEMBER_STATUS,
                 IdUpdate:'',
                 nameUserUpdate:'',
+                errExistUserInProject:'',
                 param:{
                     from:'',
                     to:'',
@@ -352,12 +379,12 @@
                 paramCreate: {
                     'user_id':'',
                     'role':'',
-                    'Allocation':'',
+                    'allocation':'',
                     'from_at':'',
                     'to_at':'',
                 },
                 'UserCreate' :[],
-                'RoleCreate' : [],
+                'RoleCreate' : PROJECT_ROLE,
 
                 headers: [
                     { text: 'Full Name', value: 'user.full_name' },
@@ -411,6 +438,13 @@
                 role : { required},
                 is_member : { required},
             },
+            paramCreate : {
+                user_id: { required,integer},
+                role : { required},
+                allocation : {required, integer, between: between(0, 100)},
+                from_at: {required},
+                to_at : { required },
+            },
         },
         computed:{
             ProjectID(){
@@ -434,6 +468,40 @@
                 !this.$v.paramUpdate.is_member.required && errors.push('Status is required.');
                 return errors
             },
+
+            UserCreateErrors () {
+                const errors = [];
+                if (!this.$v.paramCreate.user_id.$dirty) return errors;
+                !this.$v.paramCreate.user_id.integer && errors.push('User_id inval');
+                !this.$v.paramCreate.user_id.required && errors.push('User is required.');
+                return errors
+            },
+            RoleCreateErrors () {
+                const errors = [];
+                if (!this.$v.paramCreate.role.$dirty) return errors;
+                !this.$v.paramCreate.role.required && errors.push('Role is required.');
+                return errors
+            },
+            AllocationCreateErrors () {
+                const errors = [];
+                if (!this.$v.paramCreate.allocation.$dirty) return errors;
+                !this.$v.paramCreate.allocation.required && errors.push('Allocation is required.');
+                !this.$v.paramCreate.allocation.integer && errors.push('Allocation is integer.');
+                !this.$v.paramCreate.allocation.between && errors.push('Allocation is between 0% and 100%.');
+                return errors
+            },
+            FromCreateErrors () {
+                const errors = [];
+                if (!this.$v.paramCreate.from_at.$dirty) return errors;
+                !this.$v.paramCreate.from_at.required && errors.push('StartDate is required.');
+                return errors
+            },
+            ToCreateErrors () {
+                const errors = [];
+                if (!this.$v.paramCreate.to_at.$dirty) return errors;
+                !this.$v.paramCreate.to_at.required && errors.push('EndDate is required.');
+                return errors
+            },
         },
         watch: {
             ParamChange:{
@@ -446,10 +514,10 @@
         created(){
             this.getDefaultDate();
             this.renderData();
+            this.getUserToCreate();
         },
         methods:{
-            renderData()
-            {
+            renderData() {
                 this.isLoadingDataMember = true;
                 const ProjectID = this.ProjectID;
                 const params= Object.keys(this.param).reduce((prev, key) => {
@@ -517,6 +585,36 @@
                 this.paramUpdate.is_member = MEMBER_STATUS.filter(status =>status.value === item.is_member)[0].key;
                 this.diaLogUpdateMember = true;
             },
+            createMember() {
+                if (this.addToResource == false) {
+                    this.$v.paramCreate.user_id.$touch();
+                    this.$v.paramCreate.role.$touch();
+                    if (!this.$v.paramCreate.user_id.$invalid && !this.$v.paramCreate.role.$invalid) {
+                        const paramsCreate = Object.keys(this.paramCreate).reduce((prev, key) => {
+                            if (this.paramCreate[key] !== '') {
+                                prev[key] = this.paramCreate[key];
+                            }
+                            return prev;
+                        }, {});
+                        paramsCreate['project_id'] = this.ProjectID;
+                        const ProID = this.ProjectID;
+                        this.createMemberFunction(ProID, paramsCreate);
+                    }
+                } else {
+                    this.$v.paramCreate.$touch();
+                    if (!this.$v.paramCreate.$invalid) {
+                        const paramsCreate = Object.keys(this.paramCreate).reduce((prev, key) => {
+                            if (this.paramCreate[key] !== '') {
+                                prev[key] = this.paramCreate[key];
+                            }
+                            return prev;
+                        }, {});
+                        paramsCreate['project_id'] = this.ProjectID;
+                        const ProID = this.ProjectID;
+                        this.createMemberFunction(ProID, paramsCreate);
+                    }
+                }
+            },
             UpdateMember() {
                 this.$v.paramUpdate.$touch();
                 if (!this.$v.paramUpdate.$invalid) {
@@ -553,6 +651,60 @@
                 this.paramUpdate.role='';
                 this.paramUpdate.status='';
             },
+            ClearValidateCreate() {
+                this.diaLogcreateMember=false;
+                this.addToResource=false;
+                this.$v.paramCreate.$reset();
+                this.paramCreate.user_id= null;
+                this.paramCreate.role='';
+                this.paramCreate.from_at='';
+                this.paramCreate.to_at='';
+                this.paramCreate.allocation='';
+            },
+            getUserToCreate(){
+                this.axios
+                    .get('/api/users/suggestuser')
+                    .then(res=> {
+                        this.UserCreate = res.data;
+                    })
+                    .catch(()=>{
+                        this.UserCreate = [];
+                    });
+            },
+            change(){
+                if(!this.addToResource) {
+                    this.$v.paramCreate.from_at.$reset();
+                    this.$v.paramCreate.to_at.$reset();
+                    this.$v.paramCreate.allocation.$reset();
+                    this.paramCreate.from_at='';
+                    this.paramCreate.to_at='';
+                    this.paramCreate.allocation='';
+                }
+            },
+            createMemberFunction(ProID,paramsCreate){
+                this.axios
+                    .post(`/api/projects/${ProID}/members`, paramsCreate)
+                    .then(res => {
+                        this.renderData();
+                        this.diaLogcreateMember = false;
+                        this.errExistUserInProject = false;
+                        this.ClearValidateCreate();
+                        this.snackbar = true;
+                        this.snackbarText = 'Add Member To Project Success';
+                        this.colors = 'success';
+                    })
+                    .catch((err) => {
+                        if (err.response.status === 422) {
+                            this.errExistUserInProject = true;
+                        } else {
+                            this.ClearValidateCreate;
+                            this.diaLogcreateResource = false;
+                            this.snackbar = true;
+                            this.snackbarText = 'Add Member To Project False';
+                            this.colors = 'error';
+                        }
+                    });
+            }
         }
     }
 </script>
