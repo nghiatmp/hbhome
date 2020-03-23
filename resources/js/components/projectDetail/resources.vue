@@ -624,6 +624,12 @@
             this.getUserCreateResource();
             this.renderData();
         },
+        mounted() {
+            this.$root.$on('event-change-member', () => {
+                this.getUserCreateResource();
+                this.renderData();
+            });
+        },
         methods:{
             renderData()
             {
@@ -716,6 +722,7 @@
                             this.diaLogcreateResource = false;
                             this.errMessageCreate = false;
                             this.ClearValidateCreate();
+                            this.$root.$emit('event-change-resource');
                             this.snackbar = true;
                             this.snackbarText = 'Add Resource Success';
                             this.colors = 'success';
@@ -748,6 +755,7 @@
                         .put(`/api/resources/${IdResource}`, paramUpdate)
                         .then(res => {
                             this.renderData();
+                            this.$root.$emit('event-change-resource');
                             this.diaLogUpdateResource = false;
                             this.errMessageUpdate = false;
                             this.ClearValidateUpdate();
@@ -775,6 +783,7 @@
                     .delete(`/api/resources/${reId}`)
                     .then(res=>{
                         this.renderData();
+                        this.$root.$emit('event-change-resource');
                         this.diaLogdeleteResource = false;
                         this.snackbar = true;
                         this.snackbarText = 'Remove Resource Success';

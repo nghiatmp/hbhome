@@ -516,6 +516,11 @@
             this.renderData();
             this.getUserToCreate();
         },
+        mounted() {
+            this.$root.$on('event-change-resource', () => {
+                this.renderData();
+            });
+        },
         methods:{
             renderData() {
                 this.isLoadingDataMember = true;
@@ -686,6 +691,7 @@
                     .post(`/api/projects/${ProID}/members`, paramsCreate)
                     .then(res => {
                         this.renderData();
+                        this.$root.$emit('event-change-member');
                         this.diaLogcreateMember = false;
                         this.errExistUserInProject = false;
                         this.ClearValidateCreate();
