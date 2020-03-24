@@ -1,5 +1,20 @@
 <template>
     <v-card class="mt-5">
+        <v-snackbar
+            v-model="snackbar"
+            :color="colors"
+            :right="true"
+            :timeout="2500"
+            :top="true"
+        >
+            {{ snackbarText }}
+            <v-btn
+                dark
+                text
+                @click="snackbar = false"
+            >
+                Close
+            </v-btn></v-snackbar>
         <v-skeleton-loader
             type="card"
             v-if="isLoading"
@@ -31,7 +46,7 @@
                             <v-layout justify-center>
                                 <v-icon @click="getInForPhase(item)">info</v-icon>
                                 <v-icon class="ml-2">fas fa-edit</v-icon>
-                                <v-icon class="ml-2" @click="diaLogChangeStatus=true">far fa-clone</v-icon>
+                                <v-icon class="ml-2" @click="getdataChangeStatus(item)">far fa-clone</v-icon>
                             </v-layout>
                         </template>
                     </v-data-table>
@@ -178,7 +193,7 @@
         >
             <v-card>
                 <v-card-title>
-                    Create Project
+                    Update Phase
                 </v-card-title>
                 <v-container>
                     <v-row class="mx-2">
@@ -209,13 +224,6 @@
                                 @change="$v.paramChangeStatus.css.$touch()"
                                 @blur="$v.paramChangeStatus.css.$touch()"
                             />
-<!--                            <div class="v-text-field__details" v-if="errExistKeyCreate">-->
-<!--                                <div class="v-messages theme&#45;&#45;light error&#45;&#45;text" role="alert">-->
-<!--                                    <div class="v-messages__wrapper">-->
-<!--                                        <div class="v-messages__message">This key has already been set for another project</div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
                         </v-col>
                         <v-col class="align-center justify-space-between" cols="6">
                             <v-text-field
@@ -271,7 +279,8 @@
 
 <script>
     import {PHASE_STATUS} from "../../constants/common";
-    import {between, integer, required, minValue, numeric} from "vuelidate/lib/validators";
+    import {between, required, minValue, helpers } from "vuelidate/lib/validators";
+    const regexKey = helpers.regex('regexNumber', /^[+-]?([0-9]*[.])?[0-9]+$/);
     export default {
         data () {
             return {
@@ -287,6 +296,9 @@
                 diaLogInForPhase:false,
                 diaLogChangeStatus:false,
                 addToResource:false,
+                snackbar: false,
+                snackbarText:'',
+                colors:'',
                 paramCreate: {
                     'user_id':'',
                     'role':'',
@@ -301,7 +313,8 @@
                     'ee':'',
                     'timeliness':'',
                 },
-                StatusPhase:[],
+                IdPhase:'',
+                StatusPhase: PHASE_STATUS,
                 'UserCreate' :[],
                 'RoleCreate' : [],
                 desserts: [],
@@ -331,7 +344,7 @@
                 const errors = [];
                 if (!this.$v.paramChangeStatus.css.$dirty) return errors;
                 !this.$v.paramChangeStatus.css.required && errors.push('Css is required.');
-                !this.$v.paramChangeStatus.css.numeric && errors.push('Css is numeric.');
+                !this.$v.paramChangeStatus.css.regexKey && errors.push('Css is number.');
                 !this.$v.paramChangeStatus.css.between && errors.push('Css is between 0% and 100%.');
                 return errors
             },
@@ -339,7 +352,7 @@
                 const errors = [];
                 if (!this.$v.paramChangeStatus.leakage.$dirty) return errors;
                 !this.$v.paramChangeStatus.leakage.required && errors.push('Leakage is required.');
-                !this.$v.paramChangeStatus.leakage.numeric && errors.push('Leakage is numeric.');
+                !this.$v.paramChangeStatus.leakage.regexKey && errors.push('Leakage is number.');
                 !this.$v.paramChangeStatus.leakage.minValue && errors.push('Please enter a value greater than or equal to 0');
                 return errors
             },
@@ -347,7 +360,7 @@
                 const errors = [];
                 if (!this.$v.paramChangeStatus.ee.$dirty) return errors;
                 !this.$v.paramChangeStatus.ee.required && errors.push('EE is required.');
-                !this.$v.paramChangeStatus.ee.numeric && errors.push('EE is numeric.');
+                !this.$v.paramChangeStatus.ee.regexKey && errors.push('EE is number.');
                 !this.$v.paramChangeStatus.ee.minValue && errors.push('Please enter a value greater than or equal to 0');
                 return errors
             },
@@ -355,7 +368,7 @@
                 const errors = [];
                 if (!this.$v.paramChangeStatus.timeliness.$dirty) return errors;
                 !this.$v.paramChangeStatus.timeliness.required && errors.push('Css is required.');
-                !this.$v.paramChangeStatus.timeliness.numeric && errors.push('Css is numeric.');
+                !this.$v.paramChangeStatus.timeliness.regexKey && errors.push('Css is number.');
                 !this.$v.paramChangeStatus.timeliness.between && errors.push('Css is between 0% and 100%.');
                 return errors
             },
@@ -363,18 +376,17 @@
         validations : {
             paramChangeStatus: {
                 status: { required},
-                css: {required, numeric, between: between(0, 100)},
-                leakage: {required, numeric, minValue : 0},
-                ee: {required, numeric, minValue : 0},
-                timeliness: {required, numeric, between: between(0, 100)},
+                css: {required, regexKey, between: between(0, 100)},
+                leakage: {required, regexKey, minValue: minValue(0)},
+                ee: {required, regexKey, minValue: minValue(0)},
+                timeliness: {required, regexKey, between: between(0, 100)},
             }
         },
         created(){
             this.renderData();
         },
         methods:{
-            renderData()
-            {
+            renderData() {
                 this.isLoading = true;
                 const ProjectID = this.ProjectID;
                 this.axios
@@ -424,10 +436,41 @@
                     }
                 ];
             },
+            getdataChangeStatus(item) {
+                this.IdPhase = item.id;
+                this.paramChangeStatus.status = PHASE_STATUS.filter(status => status.value === item.status)[0].key;
+                this.paramChangeStatus.css = item.css;
+                this.paramChangeStatus.leakage = item.leakage;
+                this.paramChangeStatus.ee = item.ee;
+                this.paramChangeStatus.timeliness = item.timeliness;
+                this.diaLogChangeStatus = true;
+            },
             changeStatusPhase(){
-                this.$v.diaLogChangeStatus.$touch();
-                if (!this.$v.diaLogChangeStatus.$invalid) {
-                    console.log('ok');
+                this.$v.paramChangeStatus.$touch();
+                if (!this.$v.paramChangeStatus.$invalid) {
+                    const params= Object.keys(this.paramChangeStatus).reduce((prev, key) => {
+                        if(this.paramChangeStatus[key] !== null) {
+                            prev[key] = this.paramChangeStatus[key];
+                        }
+                        return prev;
+                    }, {});
+                    this.axios
+                        .put(`/api/phases/1/change-status`, params)
+                        .then(res=>{
+                            this.renderData();
+                            this.diaLogChangeStatus = false;
+                            this.ClearValidateChangeStatus();
+                            this.snackbar = true;
+                            this.snackbarText = 'Update Phase Success';
+                            this.colors = 'success';
+                        })
+                        .catch(err=>{
+                            this.ClearValidateChangeStatus();
+                            this.diaLogChangeStatus = false;
+                            this.snackbar = true;
+                            this.snackbarText = 'Update Phase False';
+                            this.colors = 'error';
+                        });
                 }
             },
             ClearValidateChangeStatus() {
