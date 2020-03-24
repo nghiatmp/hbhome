@@ -24,7 +24,8 @@ Vue.use(Vuetify);
 Vue.use(VueRouter);
 Vue.use(VueAuth, auth);
 Vue.use(Vuelidate);
-Vue.use(HighchartsVue)
+Vue.use(HighchartsVue);
+Vue.use(require('vue-moment'));
 
 
 new Vue({

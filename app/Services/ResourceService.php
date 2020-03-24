@@ -219,7 +219,8 @@ class ResourceService
         return $this->resource
             ->where('from_at', '<=', $to)
             ->where('to_at', '>=', $from)
-            ->orderBy('project_id', 'role')
+            ->orderBy('project_id', 'asc')
+            ->orderBy('role', 'asc')
             ->with('user', 'project')
             ->get();
     }

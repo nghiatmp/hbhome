@@ -37,16 +37,21 @@ class EEController extends Controller
      */
     public function main(Request $request)
     {
-        $month = $request->get('month');
-        $from = Carbon::parse($month)->startOfMonth();
-        $to = Carbon::parse($month)->endOfMonth();
-        //Get all holidays by duration
-        $holidays = $this->holidayService->findHolidaysByDuration($from, $to);
-        //get all team
-        $allTeams = $this->teamService->getAllTeam();
-        // get all team by tree
-        $treeTeam = $this->teamService->getDataTeamForTreeView($allTeams);
-        $dataOverview = $this->overviewService->getEEByMonth($month, $holidays, $treeTeam, $allTeams);
-        return response()->json($dataOverview, 200);
+        try {
+            $month = $request->get('month');
+            $from = Carbon::parse($month)->startOfMonth();
+            $to = Carbon::parse($month)->endOfMonth();
+            //Get all holidays by duration
+            $holidays = $this->holidayService->findHolidaysByDuration($from, $to);
+            //get all team
+            $allTeams = $this->teamService->getAllTeam();
+            // get all team by tree
+            $treeTeam = $this->teamService->getDataTeamForTreeView($allTeams);
+            $dataOverview = $this->overviewService->getEEByMonth($month, $holidays, $treeTeam, $allTeams);
+            return response()->json($dataOverview, 200);
+        } catch(\Exception $exception){
+            dd($exception);
+        }
+
     }
 }
