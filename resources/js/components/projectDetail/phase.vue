@@ -27,7 +27,7 @@
                 <v-col class="mt-2" cols="2" sm="3">
                     <v-row class="d-flex justify-end" flat tile>
                         <v-col>
-                            <v-btn depressed color="primary" @click="diaLogcreateMember=true">
+                            <v-btn depressed color="primary" @click="diaLogcreatePhase=true">
                                 Create Phase
                             </v-btn>
                         </v-col>
@@ -54,7 +54,7 @@
             </v-card>
         </v-card>
         <v-dialog
-            v-model="diaLogcreateMember"
+            v-model="diaLogcreatePhase"
             width="700px"
             height="600px"
         >
@@ -64,33 +64,25 @@
                 </v-card-title>
                 <v-container>
                     <v-row class="mx-2">
-                        <v-col class="align-center justify-space-between" cols="6">
-                            <v-select
-                                v-model="paramCreate.user_id"
-                                :items="UserCreate"
-                                label="Select User"
-                                item-value="key"
-                                item-text="value"
-                                :hide-details="true"
+                        <v-col cols="6" md="6" sm="6">
+                            <v-text-field
+                                v-model="paramCreate.title"
+                                label="Name"
                                 dense
                                 outlined
-                                required
                             />
                         </v-col>
-                        <v-col class="align-center justify-space-between" cols="6">
-                            <v-select
-                                v-model="paramCreate.role"
-                                :items="RoleCreate"
-                                label="Role"
-                                item-value="key"
-                                item-text="value"
-                                :hide-details="true"
+                        <v-col cols="6" md="6" sm="6">
+                            <v-text-field
+                                v-model="paramCreate.budget"
+                                label="Budget"
+                                disabled
+                                readonly
                                 dense
                                 outlined
-                                required
                             />
                         </v-col>
-                        <v-col cols="6" md="6" sm="6" v-if="addToResource">
+                        <v-col cols="6" md="6" sm="6">
                             <v-menu
                                 v-model="menuFromCreate"
                                 :close-on-content-click="false"
@@ -115,7 +107,7 @@
                                 <v-date-picker v-model="paramCreate.from_at" locale="UTC"  @input="menuFromCreate=false" />
                             </v-menu>
                         </v-col>
-                        <v-col cols="6" md="6" sm="6" v-if="addToResource">
+                        <v-col cols="6" md="6" sm="6">
                             <v-menu
                                 v-model="menuToCreate"
                                 :close-on-content-click="false"
@@ -140,23 +132,22 @@
                                 <v-date-picker v-model="paramCreate.to_at"  @input="menuToCreate=false" />
                             </v-menu>
                         </v-col>
-                        <v-col class="align-center" cols="12" v-if="addToResource">
+                        <v-col class="align-center" cols="12">
                             <v-text-field
                                 v-model="paramCreate.note"
-                                label="Allocation"
+                                label="Note"
                                 dense
                                 outlined
                             />
                         </v-col>
-                        <v-switch v-model="addToResource" class="mx-2" label="Add To Resource"></v-switch>
                     </v-row>
                 </v-container>
                 <v-card-actions>
-                    <v-btn
+                    <v-btn @click="diaLogcreatePhase =false"
                     >Cancel</v-btn>
                     <v-btn
                         color="primary"
-                    >Create Member</v-btn>
+                    >Create Phase</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -289,22 +280,20 @@
                 menuTo:false,
                 menuFromCreate:false,
                 menuToCreate:false,
-                date_from:'',
-                date_to:'',
                 isLoading:false,
-                diaLogcreateMember:false,
+                diaLogcreatePhase:false,
                 diaLogInForPhase:false,
                 diaLogChangeStatus:false,
-                addToResource:false,
                 snackbar: false,
                 snackbarText:'',
                 colors:'',
                 paramCreate: {
-                    'user_id':'',
-                    'role':'',
-                    'Allocation':'',
+                    'title':'',
                     'from_at':'',
                     'to_at':'',
+                    'budget': '',
+                    'budget_details':'',
+                    'note':'',
                 },
                 paramChangeStatus: {
                     'status':'',
@@ -312,6 +301,9 @@
                     'leakage':'',
                     'ee':'',
                     'timeliness':'',
+                },
+                phaseBudget: {
+                    'model': '3-2020',
                 },
                 IdPhase:'',
                 StatusPhase: PHASE_STATUS,
@@ -446,6 +438,7 @@
                 this.diaLogChangeStatus = true;
             },
             changeStatusPhase(){
+                const Id =  this.IdPhase;
                 this.$v.paramChangeStatus.$touch();
                 if (!this.$v.paramChangeStatus.$invalid) {
                     const params= Object.keys(this.paramChangeStatus).reduce((prev, key) => {
@@ -455,7 +448,7 @@
                         return prev;
                     }, {});
                     this.axios
-                        .put(`/api/phases/1/change-status`, params)
+                        .put(`/api/phases/${Id}/change-status`, params)
                         .then(res=>{
                             this.renderData();
                             this.diaLogChangeStatus = false;
