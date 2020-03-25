@@ -61,7 +61,7 @@
                             </template>
                             <template v-slot:item.id="{ item }">
                                 <v-layout justify-center>
-                                    <i class="far fa-edit" @click="GetDataUpdateProject(item)"></i>
+                                    <v-icon @click="GetDataUpdateProject(item)">far fa-edit</v-icon>
                                 </v-layout>
                             </template>
                         </v-data-table>
