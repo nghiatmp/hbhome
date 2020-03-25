@@ -249,7 +249,6 @@
                                 }
                             });
                         }
-                        console.log(this.dataFreeUser);
                         this.dataProject = dataProject;
                         this.tableData = dataReturn;
                         this.isLoadingData = false;
