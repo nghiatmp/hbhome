@@ -11,6 +11,9 @@ import Vuetify from 'vuetify';
 import vuetify from './plugins/vuetify';
 import auth from './auth';
 import HighchartsVue from 'highcharts-vue'
+import Calendar from 'v-calendar/lib/components/calendar.umd'
+import DatePicker from 'v-calendar/lib/components/date-picker.umd'
+import VCalendar from 'v-calendar';
 
 require('./bootstrap');
 
@@ -26,6 +29,11 @@ Vue.use(VueAuth, auth);
 Vue.use(Vuelidate);
 Vue.use(HighchartsVue);
 Vue.use(require('vue-moment'));
+Vue.component('calendar', Calendar);
+Vue.component('date-picker', DatePicker);
+Vue.use(VCalendar, {
+    componentPrefix: 'vc',  // Use <vc-calendar /> instead of <v-calendar />
+});
 
 
 new Vue({
