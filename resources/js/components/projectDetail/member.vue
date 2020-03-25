@@ -118,7 +118,10 @@
                 <v-tab-item
                     id="tab_chart"
                 >
-                    <highcharts :options="chartOptions"></highcharts>
+                    <v-card v-if="dataChartEmpty">
+                        <v-list-item-title style="padding: 20px 50px">Nothing To Show</v-list-item-title>
+                    </v-card>
+                    <highcharts v-if="!dataChartEmpty" :options="chartOptions"></highcharts>
                 </v-tab-item>
                 <v-tab-item
                     id="tab_list"
@@ -133,7 +136,7 @@
                             >
                                 <template v-slot:item.id="{ item }">
                                     <v-layout justify-center>
-                                        <i class="far fa-edit mr-2" @click="getDataUpdate(item)"></i>
+                                        <v-icon @click="getDataUpdate(item)">far fa-edit mr-2</v-icon>
                                     </v-layout>
                                 </template>
                             </v-data-table>
@@ -361,6 +364,7 @@
                 Status: MEMBER_STATUS,
                 IdUpdate:'',
                 nameUserUpdate:'',
+                dataChartEmpty:false,
                 errExistUserInProject:'',
                 param:{
                     from:'',
@@ -535,19 +539,23 @@
                     .get(`/api/projects/${ProjectID}/effort-members`, {params})
                     .then(res=>{
                         const dataMember =res.data.users;
-                        var TotalEf = 0;
-                        Object.values(dataMember).forEach(key =>{
-                            TotalEf += key.effort;
-                        });
-                        const dataReturn=[];
-                        Object.values(dataMember).forEach(key =>{
-                            dataReturn.push({
-                                'name': key.name,
-                                'y':(key.effort)/TotalEf*100,
-                                'effort':key.effort
+                        if (dataMember.length == 0) {
+                            this.dataChartEmpty = true;
+                        } else {
+                            var TotalEf = 0;
+                            Object.values(dataMember).forEach(key =>{
+                                TotalEf += key.effort;
                             });
-                        });
-                        this.chartOptions.series[0].data = dataReturn;
+                            const dataReturn=[];
+                            Object.values(dataMember).forEach(key =>{
+                                dataReturn.push({
+                                    'name': key.name,
+                                    'y':(key.effort)/TotalEf*100,
+                                    'effort':key.effort
+                                });
+                            });
+                            this.chartOptions.series[0].data = dataReturn;
+                        }
                     })
                     .catch(err=>{
                         this.isLoadingDataMember = false;

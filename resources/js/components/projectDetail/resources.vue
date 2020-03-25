@@ -87,60 +87,65 @@
                type="card"
                v-if="isLoadingDataResource"
            />
-           <v-tabs v-if="!isLoadingDataResource"
-               v-model="tab"
-               background-color="light-blue darken-1"
-               class="elevation-2"
-               dark
-               :centered="centered"
-               :grow="grow"
-               :vertical="vertical"
-               :right="right"
-               :prev-icon="prevIcon ? 'mdi-arrow-left-bold-box-outline' : undefined"
-               :next-icon="nextIcon ? 'mdi-arrow-right-bold-box-outline' : undefined"
-               :icons-and-text="icons"
-           >
-               <v-tabs-slider />
-
-               <v-tab href="#tab_chart">
-                   Chart
-                   <v-icon v-if="icons">mdi-phone</v-icon>
-               </v-tab>
-
-               <v-tab
-                   href="#tab_list"
+           <v-card style="margin-bottom: 50px">
+               <v-tabs v-if="!isLoadingDataResource"
+                       v-model="tab"
+                       background-color="light-blue darken-1"
+                       class="elevation-2"
+                       dark
+                       :centered="centered"
+                       :grow="grow"
+                       :vertical="vertical"
+                       :right="right"
+                       :prev-icon="prevIcon ? 'mdi-arrow-left-bold-box-outline' : undefined"
+                       :next-icon="nextIcon ? 'mdi-arrow-right-bold-box-outline' : undefined"
+                       :icons-and-text="icons"
                >
-                   List
-                   <v-icon v-if="icons">mdi-phone</v-icon>
-               </v-tab>
+                   <v-tabs-slider />
 
-               <v-tab-item
-                   id="tab_chart"
-               >
-                   <highcharts :options="chartOptions"></highcharts>
-               </v-tab-item>
-               <v-tab-item
-                   id="tab_list"
-               >
-                   <v-card class="pa-3" style="box-shadow: none">
-                       <v-card class="pa-3" style="box-shadow: none">
-                           <v-data-table
-                               :headers="headers"
-                               :items="tableData"
-                               class="elevation-4 mb-4"
-                               locale="US"
-                           >
-                               <template v-slot:item.id="{ item }">
-                                   <v-layout justify-center>
-                                       <i class="far fa-edit mr-2" @click="getDataUpdate(item)"></i>
-                                       <i class="far fa-trash-alt" @click="detete(item.id)"></i>
-                                   </v-layout>
-                               </template>
-                           </v-data-table>
+                   <v-tab href="#tab_chart">
+                       Chart
+                       <v-icon v-if="icons">mdi-phone</v-icon>
+                   </v-tab>
+
+                   <v-tab
+                       href="#tab_list"
+                   >
+                       List
+                       <v-icon v-if="icons">mdi-phone</v-icon>
+                   </v-tab>
+
+                   <v-tab-item
+                       id="tab_chart"
+                   >
+                       <v-card v-if="dataChartEmpty">
+                           <v-list-item-title style="padding: 20px 50px">Nothing To Show</v-list-item-title>
                        </v-card>
-                   </v-card>
-               </v-tab-item>
-           </v-tabs>
+                       <highcharts v-if="!dataChartEmpty" :options="chartOptions"></highcharts>
+                   </v-tab-item>
+                   <v-tab-item
+                       id="tab_list"
+                   >
+                       <v-card class="pa-3" style="box-shadow: none">
+                           <v-card class="pa-3" style="box-shadow: none">
+                               <v-data-table
+                                   :headers="headers"
+                                   :items="tableData"
+                                   class="elevation-4 mb-4"
+                                   locale="US"
+                               >
+                                   <template v-slot:item.id="{ item }">
+                                       <v-layout justify-center>
+                                           <v-icon @click="getDataUpdate(item)">far fa-edit mr-2</v-icon>
+                                           <v-icon  @click="detete(item.id)">far fa-trash-alt</v-icon>
+                                       </v-layout>
+                                   </template>
+                               </v-data-table>
+                           </v-card>
+                       </v-card>
+                   </v-tab-item>
+               </v-tabs>
+           </v-card>
            <v-dialog
                v-model="diaLogcreateResource"
                width="700px"
@@ -480,6 +485,7 @@
                     from_at:'',
                     to_at:'',
                 },
+                dataChartEmpty:false,
                 errMessageCreate:'',
                 errMessage:'',
                 errMessageUpdate:'',
@@ -645,14 +651,18 @@
                     .get(`/api/projects/${ProjectID}/effort`, {params})
                     .then(res=>{
                         const dataResource =res.data.efforts;
-                        const datamonth=[];
-                        const dataMM=[];
-                        Object.values(dataResource).forEach(key =>{
-                            datamonth.push(key.month);
-                            dataMM.push(key.mm);
-                        });
-                        this.chartOptions.xAxis.categories= datamonth;
-                        this.chartOptions.series[0].data = dataMM;
+                        if (dataResource.length == 0) {
+                            this.dataChartEmpty = true;
+                        } else {
+                            const datamonth=[];
+                            const dataMM=[];
+                            Object.values(dataResource).forEach(key =>{
+                                datamonth.push(key.month);
+                                dataMM.push(key.mm);
+                            });
+                            this.chartOptions.xAxis.categories= datamonth;
+                            this.chartOptions.series[0].data = dataMM;
+                        }
                     })
                     .catch(err=>{
                         this.isLoadingDataResource = false;
