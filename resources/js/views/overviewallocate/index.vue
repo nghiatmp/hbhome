@@ -27,61 +27,122 @@
                     </v-menu>
                 </v-col>
             </v-row>
-            <v-row>
+            <v-skeleton-loader
+                type="card"
+                v-if="isLoadingData"
+            />
+            <v-tabs v-if="!isLoadingData"
+                    v-model="tab"
+                    background-color="light-blue darken-1"
+                    class="elevation-2"
+                    dark
+                    :centered="centered"
+                    :grow="grow"
+                    :vertical="vertical"
+                    :right="right"
+                    :prev-icon="prevIcon ? 'mdi-arrow-left-bold-box-outline' : undefined"
+                    :next-icon="nextIcon ? 'mdi-arrow-right-bold-box-outline' : undefined"
+                    :icons-and-text="icons"
+            >
+                <v-tabs-slider />
 
-                <v-col cols="6">
-                    <v-card-title>
-                        EE Information Overview
-                    </v-card-title>
+                <v-tab href="#tab_chart">
+                    Overview Allocate
+                    <v-icon v-if="icons">mdi-phone</v-icon>
+                </v-tab>
+
+                <v-tab
+                    href="#tab_list"
+                >
+                    List User Free
+                    <v-icon v-if="icons">mdi-phone</v-icon>
+                </v-tab>
+
+                <v-tab-item
+                    id="tab_chart"
+                >
+                    <v-row>
+                        <v-col cols="6" md="12" sm="12"  lg="6">
+                            <v-card-title class="text-center" style="width: 600px; margin:auto">
+                                EE Information Overview
+                            </v-card-title>
+                            <v-container>
+                                <v-simple-table style="margin:auto">
+                                    <template v-slot:default>
+                                        <thead>
+                                        <tr>
+                                            <th class="text-left">Name Team</th>
+                                            <th class="text-left">EE</th>
+                                            <th class="text-left">Budget</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr v-for="item in tableData" :key="item.name">
+                                            <td>{{ item.name }}</td>
+                                            <td>{{ item.ee }}</td>
+                                            <td>{{ item.budget }}</td>
+                                        </tr>
+                                        </tbody>
+                                    </template>
+                                </v-simple-table>
+                            </v-container>
+                        </v-col>
+                        <v-col cols="6" md="12" sm="12" lg="6">
+                            <v-card-title class="text-center" style="width: 600px; margin:auto">
+                                EE Information Project
+                            </v-card-title>
+                            <v-container>
+                                <v-simple-table style="margin:auto">
+                                    <template v-slot:default>
+                                        <thead>
+                                        <tr>
+                                            <th class="text-left">Name Project</th>
+                                            <th class="text-left">Name Team</th>
+                                            <th class="text-left">EE</th>
+                                            <th class="text-left">Budget</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr v-for="item in dataProject" :key="item.name">
+                                            <td>{{ item.name }}</td>
+                                            <td>{{ item.team }}</td>
+                                            <td>{{ item.ee }}</td>
+                                            <td>{{ item.budget }}</td>
+                                        </tr>
+                                        </tbody>
+                                    </template>
+                                </v-simple-table>
+                            </v-container>
+                        </v-col>
+                    </v-row>
+                </v-tab-item>
+                <v-tab-item
+                    id="tab_list"
+                >
                     <v-container>
-                        <v-simple-table style="width: 600px">
+                        <v-simple-table style="margin:auto">
                             <template v-slot:default>
                                 <thead>
                                 <tr>
-                                    <th class="text-left">Name Team</th>
+                                    <th class="text-left">Id</th>
+                                    <th class="text-left">Name User</th>
+                                    <th class="text-left">Email</th>
                                     <th class="text-left">EE</th>
-                                    <th class="text-left">Budget</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr v-for="item in tableData" :key="item.name">
-                                    <td>{{ item.name }}</td>
+                                <tr v-for="item in dataFreeUser" :key="item.name">
+                                    <td>{{ item.id }}</td>
+                                    <td>{{ item.title }}</td>
+                                    <td>{{ item.email }}</td>
                                     <td>{{ item.ee }}</td>
-                                    <td>{{ item.budget }}</td>
                                 </tr>
                                 </tbody>
                             </template>
                         </v-simple-table>
                     </v-container>
-                </v-col>
-                <v-col cols="6">
-                    <v-card-title>
-                        EE Information Project
-                    </v-card-title>
-                    <v-container>
-                        <v-simple-table style="width: 600px">
-                            <template v-slot:default>
-                                <thead>
-                                <tr>
-                                    <th class="text-left">Name Project</th>
-                                    <th class="text-left">Name Team</th>
-                                    <th class="text-left">EE</th>
-                                    <th class="text-left">Budget</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr v-for="item in dataProject" :key="item.name">
-                                    <td>{{ item.name }}</td>
-                                    <td>{{ item.team }}</td>
-                                    <td>{{ item.ee }}</td>
-                                    <td>{{ item.budget }}</td>
-                                </tr>
-                                </tbody>
-                            </template>
-                        </v-simple-table>
-                    </v-container>
-                </v-col>
-            </v-row>
+                </v-tab-item>
+            </v-tabs>
         </v-card>
     </Layout>
 </template>
@@ -94,6 +155,15 @@
         components: { Layout },
         data(){
             return {
+                tab: null,
+                icons: false,
+                centered: false,
+                grow: true,
+                vertical: false,
+                prevIcon: false,
+                nextIcon: false,
+                right: false,
+                isLoadingData:false,
                 params : {
                     'month': moment(new Date().toISOString().slice(0, 10)).format('YYYY-MM'),
                 },
@@ -124,6 +194,7 @@
         },
         methods:{
             renderData(){
+                this.isLoadingData = true;
                 const params= Object.keys(this.params).reduce((prev, key) => {
                     if(this.params[key] !== null) {
                         prev[key] = this.params[key];
@@ -134,7 +205,6 @@
                     .get('api/overview/ee', {params})
                     .then(res=>{
                         const dataEE = res.data;
-                        console.log(dataEE);
                         const dataReturn = [
                             {
                                 name: dataEE.title,
@@ -179,11 +249,14 @@
                                 }
                             });
                         }
+                        console.log(this.dataFreeUser);
                         this.dataProject = dataProject;
                         this.tableData = dataReturn;
+                        this.isLoadingData = false;
                     })
                     .catch(()=> {
                         this.tableData=[];
+                        this.isLoadingData = false;
                     })
             }
         }

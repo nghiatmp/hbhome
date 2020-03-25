@@ -1,9 +1,9 @@
 <template>
     <Layout>
         <v-card class="pa-3 ma-3" style="box-shadow: 0 0px 0px 0px rgba(0,0,0,.2), 0 0px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);">
-            <v-card style="width: 800px; margin: auto">
+            <v-card style="width: 900px; margin: auto">
                 <v-row class="mx-5">
-                    <v-col cols="6" md="12" sm="12">
+                    <v-col cols="6" md="12" sm="12" xl="6">
                         <v-menu
                             v-model="menuFrom"
                             :close-on-content-click="false"
@@ -27,7 +27,7 @@
                             <v-date-picker v-model="params.from" locale="UTC" :max="params.to" type="month" @input="menuFrom=false" />
                         </v-menu>
                     </v-col>
-                    <v-col cols="6" md="12" sm="12">
+                    <v-col cols="6" md="12" sm="12" xl="6">
                         <v-menu
                             v-model="menuTo"
                             :close-on-content-click="false"
@@ -55,7 +55,11 @@
                 <v-card-title>
                     MM Information
                 </v-card-title>
-                <v-container>
+                <v-skeleton-loader
+                    type="card"
+                    v-if="isLoadingData"
+                />
+                <v-container v-if="!isLoadingData">
                     <v-simple-table>
                         <template v-slot:default>
                             <thead>
@@ -86,6 +90,7 @@
         components: { Layout },
         data(){
             return {
+                isLoadingData:false,
                 params : {
                     'from': moment(new Date().toISOString().slice(0, 10)).format('YYYY-MM'),
                     'to': moment(new Date().toISOString().slice(0, 10)).format('YYYY-MM'),
@@ -116,6 +121,7 @@
         },
         methods:{
             renderData(){
+                this.isLoadingData = true;
                 const params= Object.keys(this.params).reduce((prev, key) => {
                     if(this.params[key] !== null) {
                         prev[key] = this.params[key];
@@ -152,9 +158,11 @@
                             });
                         }
                         this.tableData = dataReturn;
+                        this.isLoadingData = false;
                     })
                     .catch(()=> {
                         this.tableData=[];
+                        this.isLoadingData = false;
                     })
             }
         }
