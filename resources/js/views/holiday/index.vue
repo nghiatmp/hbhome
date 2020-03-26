@@ -609,7 +609,6 @@
                     });
             },
             getDataUpdate(item){
-                console.log(item);
                 this.idHoliday = item.id;
                 this.paramsUpdate.title = item.title;
                 this.paramsUpdate.from_at = item.from_at;

@@ -17,7 +17,7 @@ class UpdateController extends Controller
     {
         $this->teamService = $teamService;
     }
-    
+
     /**
      * Update
      * Update team with given input
@@ -43,17 +43,17 @@ class UpdateController extends Controller
     {
         $this->validation($request);
         $params = $this->getData($request);
-        $parentID = $params['parent_id'];
-        if ($parentID != 0) {
-            //Check parent team is exits
-            $parentTeam = $this->teamService->find($parentID);
-            if (is_null($parentTeam)) {
-                return response()->json(
-                    ["message" => 'Parent team is not valid'],
-                    404
-                );
-            }
-        }
+//        $parentID = $params['parent_id'];
+//        if ($parentID != 0) {
+//            //Check parent team is exits
+//            $parentTeam = $this->teamService->find($parentID);
+//            if (is_null($parentTeam)) {
+//                return response()->json(
+//                    ["message" => 'Parent team is not valid'],
+//                    404
+//                );
+//            }
+//        }
         $responseData = $this->teamService->update($request->teamId, $params);
         return response()->json($responseData, 200);
     }
@@ -62,7 +62,7 @@ class UpdateController extends Controller
     {
         return $request->validate([
             'title' => 'required|string|between:1,127',
-            'parent_id' => 'required|integer',
+//            'parent_id' => 'required|integer',
         ]);
     }
 

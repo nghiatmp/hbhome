@@ -4,6 +4,9 @@
             <UpdateComponent/>
         </v-card>
         <v-card>
+            <EE/>
+        </v-card>
+        <v-card>
             <Resourves/>
         </v-card>
         <v-card>
@@ -22,6 +25,7 @@
     import Resourves from '../../components/projectDetail/resources';
     import Member from '../../components/projectDetail/member';
     import Phase from '../../components/projectDetail/phase';
+    import EE from '../../components/projectDetail/ee';
     export default {
         name: 'Index',
         components: {
@@ -29,6 +33,7 @@
             UpdateComponent,
             Resourves,
             Member,
+            EE,
             Phase
         },
         data() {
