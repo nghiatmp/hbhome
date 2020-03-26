@@ -50,7 +50,7 @@ Route::group([
         });
 
         Route::group([
-//            'middleware' => ['auth.jwt', 'systemRole:ADMIN', 'checkUser']
+            'middleware' => ['auth.jwt', 'systemRole:ADMIN', 'checkUser']
         ], function () {
             Route::put('{userId}', 'UpdateController@main');
         });
