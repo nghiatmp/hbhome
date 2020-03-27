@@ -1,61 +1,26 @@
 <template>
-    <v-expansion-panels>
+    <v-skeleton-loader
+        type="card"
+        v-if="isLoading"
+    />
+    <v-expansion-panels  v-else>
         <v-expansion-panel>
             <v-expansion-panel-header>
-                    <v-row>
-                        <v-col class="align-center justify-space-between" cols="6">
-                            <v-list-item>
-                                <v-list-item-content>Key:</v-list-item-content>
-                                <v-list-item-content v-html="project.key"></v-list-item-content>
-                            </v-list-item>
-                        </v-col>
-                        <v-col class="align-center justify-space-between" cols="6">
-                            <v-list-item>
-                                <v-list-item-content>Contract:</v-list-item-content>
-                                <v-list-item-content  v-html="project.contract"></v-list-item-content>
-                            </v-list-item>
-                        </v-col>
-                        <v-col class="align-center justify-space-between" cols="6">
-                            <v-list-item>
-                                <v-list-item-content>Rank:</v-list-item-content>
-                                <v-list-item-content  v-html="project.rank"></v-list-item-content>
-                            </v-list-item>
-                        </v-col>
-                        <v-col class="align-center justify-space-between" cols="6">
-                            <v-list-item>
-                                <v-list-item-content>Status:</v-list-item-content>
-                                <v-list-item-content  v-html="project.status"></v-list-item-content>
-                            </v-list-item>
-                        </v-col>
-                    </v-row>
+                <span class="font-weight-bold headline">
+                    Info Project
+                </span>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
-                <v-row>
-                    <v-col class="align-center justify-space-between" cols="6">
-                        <v-list-item>
-                            <v-list-item-content>From:</v-list-item-content>
-                            <v-list-item-content  v-html="project.from"></v-list-item-content>
-                        </v-list-item>
-                    </v-col>
-                    <v-col class="align-center justify-space-between" cols="6">
-                        <v-list-item>
-                            <v-list-item-content>To:</v-list-item-content>
-                            <v-list-item-content  v-html="project.to"></v-list-item-content>
-                        </v-list-item>
-                    </v-col>
-                    <v-col class="align-center justify-space-between" cols="6">
-                        <v-list-item>
-                            <v-list-item-content>Team:</v-list-item-content>
-                            <v-list-item-content  v-html="project.team"></v-list-item-content>
-                        </v-list-item>
-                    </v-col>
-                    <v-col class="align-center justify-space-between" cols="6">
-                        <v-list-item>
-                            <v-list-item-content>Note:</v-list-item-content>
-                            <v-list-item-content  v-html="project.note"></v-list-item-content>
-                        </v-list-item>
-                    </v-col>
-                </v-row>
+                <v-simple-table>
+                    <template v-slot:default>
+                        <tbody>
+                        <tr v-for="item in desserts" :key="item.title">
+                            <td>{{ item.title }}</td>
+                            <td>{{ item.value }}</td>
+                        </tr>
+                        </tbody>
+                    </template>
+                </v-simple-table>
             </v-expansion-panel-content>
         </v-expansion-panel>
     </v-expansion-panels>
@@ -67,16 +32,8 @@
         name : 'Update',
         data() {
             return {
-                project: {
-                    'key' : '',
-                    'contract':'',
-                    'rank':'',
-                    'from':'',
-                    'to':'',
-                    'status':'',
-                    'team':'',
-                    'note':'',
-                }
+                isLoading:false,
+                desserts: [],
             }
         },
         computed:{
@@ -84,25 +41,72 @@
                 return this.$route.params.proID;
             },
         },
+        mounted(){
+            this.$root.$on('event-change-create-phase', () => {
+                this.getUserCreateResource();
+                this.getDefaultDate();
+                this.renderData();
+            });
+            this.$root.$on('event-change-update-phase', () => {
+                this.getUserCreateResource();
+                this.getDefaultDate();
+                this.renderData();
+            });
+        },
         created(){
             this.renderData();
         },
         methods:{
             renderData(){
+                this.isLoading = true;
                 const param =  this.projectID;
                 this.axios
                     .get(`/api/projects/${param}`)
                     .then(res=>{
                         const data = res.data;
-                        this.project.key = data.key;
-                        this.project.contract = PROJECT_CONTRACT.filter(contract=>contract.key == data.contract)[0].value;
-                        this.project.rank = PROJECT_RANK.filter(rank=>rank.key == data.rank)[0].value;
-                        this.project.from = data.from_at;
-                        this.project.to= data.to_at;
-                        this.project.status= PROJECT_STATUS.filter(status=>status.key == data.status)[0].value;;
-                        this.project.team= data.team.title;
-                        this.project.note= data.note;
+                        const dataReturn = [
+                            {
+                                title: 'Key',
+                                value: data.key
+                            },
+                            {
+                                title: 'Contract',
+                                value: PROJECT_CONTRACT.filter(contract=>contract.key == data.contract)[0].value
+                            },
+                            {
+                                title: 'Rank',
+                                value: PROJECT_RANK.filter(rank=>rank.key == data.rank)[0].value
+                            },
+                            {
+                                title: 'From',
+                                value: data.from_at
+                            },
+                            {
+                                title: 'To',
+                                value: data.to_at
+                            },
+                            {
+                                title: 'Status',
+                                value: PROJECT_STATUS.filter(status=>status.key == data.status)[0].value
+                            },
+                            {
+                                title: 'Team',
+                                value: data.team.title
+                            },
+                            {
+                                title: 'Note',
+                                value: data.note
+                            },
+                        ];
+
+                        this.desserts = dataReturn;
+
+                        this.isLoading = false;
                     })
+                    .catch((err) => {
+                        this.desserts = [];
+                        this.isLoading = false;
+                    });
             }
         }
     }

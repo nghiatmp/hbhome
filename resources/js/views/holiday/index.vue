@@ -17,12 +17,18 @@
             </v-btn>
         </v-snackbar>
         <v-card>
-            <v-btn
-                class="my-3"
-                @click="diaLogcreateHoliday = true"
-                color="primary"
-            >Create
-            </v-btn>
+            <v-row>
+                <v-col>
+                    <div class="d-flex justify-end" flat tile>
+                        <v-btn
+                            class="mr-10"
+                            @click="diaLogcreateHoliday = true"
+                            color="primary"
+                        >Create
+                        </v-btn>
+                    </div>
+                </v-col>
+            </v-row>
         </v-card>
         <v-skeleton-loader
             type="card"
