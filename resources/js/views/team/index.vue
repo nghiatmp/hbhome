@@ -16,9 +16,15 @@
                 Close
             </v-btn>
         </v-snackbar>
-        <v-btn color="primary" class="ml-3" @click="diaLogcreateTeam = true">
-            Create
-        </v-btn>
+        <v-row>
+            <v-col>
+                <div class="d-flex justify-end" flat tile>
+                    <v-btn color="primary" class="mr-10" @click="diaLogcreateTeam = true">
+                        Create
+                    </v-btn>
+                </div>
+            </v-col>
+        </v-row>
         <v-card class="pa-3" style="box-shadow: none">
             <v-skeleton-loader
                 type="card"

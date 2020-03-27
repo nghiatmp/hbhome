@@ -21,17 +21,17 @@
         />
         <v-card v-if="!isLoading">
             <v-row>
-                <v-col class="mt-2" cols="10" sm="9">
-                    <h3 class="ml-5">Phase</h3>
+                <v-col class="mt-2" cols="6">
+                    <span class="font-weight-bold headline ml-5">
+                        Phases
+                    </span>
                 </v-col>
-                <v-col class="mt-2" cols="2" sm="3">
-                    <v-row class="d-flex justify-end" flat tile>
-                        <v-col>
-                            <v-btn depressed color="primary" @click="diaLogcreatePhase=true">
-                                Create Phase
-                            </v-btn>
-                        </v-col>
-                    </v-row>
+                <v-col class="mt-2" cols="6">
+                    <div class="d-flex justify-end" flat tile>
+                        <v-btn class="mr-5" depressed color="primary" @click="diaLogcreatePhase=true">
+                            Create Phase
+                        </v-btn>
+                    </div>
                 </v-col>
             </v-row>
             <v-card class="pa-3" style="box-shadow: none">
