@@ -50,6 +50,9 @@
             this.$root.$on('event-change-update-phase', () => {
                 this.renderData();
             });
+            this.$root.$on('event-change-resource', () => {
+                this.renderData();
+            });
         },
         methods:{
             renderData(){

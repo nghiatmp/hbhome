@@ -21,7 +21,7 @@
                 <v-row>
                     <v-col class="mt-2 ml-6" cols="3" md="3" sm="12">
                         <v-text-field
-                            label="Project"
+                            label="Search Project"
                             :hide-details="true"
                             :validate-on-blur="true"
                             outlined
@@ -119,7 +119,6 @@
                                 label="Constract"
                                 item-value="key"
                                 item-text="value"
-                                :hide-details="true"
                                 dense
                                 outlined
                                 required
@@ -135,7 +134,6 @@
                                 label="Rank"
                                 item-value="key"
                                 item-text="value"
-                                :hide-details="true"
                                 dense
                                 outlined
                                 required
@@ -151,7 +149,6 @@
                                 label="Team"
                                 item-value="id"
                                 item-text="team"
-                                :hide-details="true"
                                 dense
                                 outlined
                                 required
@@ -165,7 +162,6 @@
                                 v-model="paramCreate.admin_id"
                                 :items="dataPM"
                                 label="PM"
-                                :hide-details="true"
                                 dense
                                 outlined
                                 clearable
@@ -243,7 +239,6 @@
                                 label="Constract"
                                 item-value="key"
                                 item-text="value"
-                                :hide-details="true"
                                 dense
                                 outlined
                                 required
@@ -259,7 +254,6 @@
                                 label="Rank"
                                 item-value="key"
                                 item-text="value"
-                                :hide-details="true"
                                 dense
                                 outlined
                                 required
@@ -275,7 +269,6 @@
                                 label="Team"
                                 item-value="id"
                                 item-text="team"
-                                :hide-details="true"
                                 dense
                                 outlined
                                 required
