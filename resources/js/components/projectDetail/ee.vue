@@ -43,6 +43,14 @@
         created(){
             this.renderData();
         },
+        mounted() {
+            this.$root.$on('event-change-create-phase', () => {
+                this.renderData();
+            });
+            this.$root.$on('event-change-update-phase', () => {
+                this.renderData();
+            });
+        },
         methods:{
             renderData(){
                 this.isLoading = true;

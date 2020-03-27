@@ -635,6 +635,16 @@
                 this.getUserCreateResource();
                 this.renderData();
             });
+            this.$root.$on('event-change-create-phase', () => {
+                this.getUserCreateResource();
+                this.getDefaultDate();
+                this.renderData();
+            });
+            this.$root.$on('event-change-update-phase', () => {
+                this.getUserCreateResource();
+                this.getDefaultDate();
+                this.renderData();
+            });
         },
         methods:{
             renderData()
