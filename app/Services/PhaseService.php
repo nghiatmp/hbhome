@@ -131,6 +131,7 @@ class PhaseService
             $params['budget'] = array_sum($budgetDetails);
             $phaseObject = $this->phase->create($params);
 
+
             //Add budget detail
             $this->budgetDetailService->updateByPhaseIDAndDetail(
                 $phaseObject->id,

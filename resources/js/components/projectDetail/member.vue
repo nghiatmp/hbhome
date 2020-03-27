@@ -524,6 +524,14 @@
             this.$root.$on('event-change-resource', () => {
                 this.renderData();
             });
+            this.$root.$on('event-change-create-phase', () => {
+                this.getDefaultDate();
+                this.renderData();
+            });
+            this.$root.$on('event-change-update-phase', () => {
+                this.getDefaultDate();
+                this.renderData();
+            });
         },
         methods:{
             renderData() {
@@ -637,7 +645,6 @@
                         }
                         return prev;
                     }, {});
-                    console.log(paramUpdate);
                     const IdUpdate = this.IdUpdate;
                     this.axios
                         .put(`/api/project-members/${IdUpdate}`, paramUpdate)
