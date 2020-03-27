@@ -5,7 +5,7 @@
                 <v-row>
                     <v-col class="mt-2 ml-6" cols="3" md="3" sm="12">
                         <v-text-field
-                            label="Phase"
+                            label="Search Phase"
                             :hide-details="true"
                             :validate-on-blur="true"
                             outlined

@@ -162,7 +162,6 @@
                                     label="Select User"
                                     item-text="email"
                                     item-value="id"
-                                    :hide-details="true"
                                     dense
                                     outlined
                                     clearable
@@ -186,7 +185,6 @@
                                     label="Role"
                                     item-value="key"
                                     item-text="value"
-                                    :hide-details="true"
                                     dense
                                     outlined
                                     required
@@ -209,7 +207,6 @@
                                             v-model="paramCreate.from_at"
                                             label="From"
                                             append-icon="event"
-                                            :hide-details="true"
                                             clearable
                                             readonly
                                             outlined
@@ -237,7 +234,6 @@
                                             v-model="paramCreate.to_at"
                                             label="To"
                                             append-icon="event"
-                                            :hide-details="true"
                                             clearable
                                             readonly
                                             outlined
@@ -295,7 +291,6 @@
                                     label="Role"
                                     item-value="key"
                                     item-text="value"
-                                    :hide-details="true"
                                     dense
                                     outlined
                                     required
@@ -311,7 +306,6 @@
                                     label="Status"
                                     item-value="key"
                                     item-text="value"
-                                    :hide-details="true"
                                     dense
                                     outlined
                                     required

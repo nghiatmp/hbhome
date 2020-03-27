@@ -164,7 +164,6 @@
                                    label="Select User"
                                    item-value="id"
                                    item-text="full_name"
-                                   :hide-details="true"
                                    dense
                                    outlined
                                    required
@@ -180,7 +179,6 @@
                                    label="Role"
                                    item-value="key"
                                    item-text="value"
-                                   :hide-details="true"
                                    dense
                                    outlined
                                    required
@@ -203,7 +201,6 @@
                                            v-model="paramCreate.from_at"
                                            label="From"
                                            append-icon="event"
-                                           :hide-details="true"
                                            clearable
                                            readonly
                                            outlined
@@ -231,7 +228,6 @@
                                            v-model="paramCreate.to_at"
                                            label="To"
                                            append-icon="event"
-                                           :hide-details="true"
                                            clearable
                                            readonly
                                            outlined
@@ -316,7 +312,6 @@
                                    :items="UserCreate"
                                    item-value="id"
                                    item-text="full_name"
-                                   :hide-details="true"
                                    dense
                                    outlined
                                    readonly
@@ -333,7 +328,6 @@
                                    label="Role"
                                    item-value="key"
                                    item-text="value"
-                                   :hide-details="true"
                                    dense
                                    outlined
                                    required
@@ -356,7 +350,6 @@
                                            v-model="paramUpdate.from_at"
                                            label="From"
                                            append-icon="event"
-                                           :hide-details="true"
                                            clearable
                                            readonly
                                            outlined
@@ -384,7 +377,6 @@
                                            v-model="paramUpdate.to_at"
                                            label="To"
                                            append-icon="event"
-                                           :hide-details="true"
                                            clearable
                                            readonly
                                            outlined

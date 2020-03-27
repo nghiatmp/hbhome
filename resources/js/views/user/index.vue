@@ -21,7 +21,7 @@
                 <v-col class="mt-2 ml-2" cols="3" md="3" sm="6">
                     <v-text-field
                         class="pa-3"
-                        label="UserName"
+                        label="Search UserName"
                         :hide-details="true"
                         :validate-on-blur="true"
                         outlined
@@ -124,7 +124,6 @@
                                 label="Team"
                                 item-value="id"
                                 item-text="title"
-                                :hide-details="true"
                                 dense
                                 outlined
                                 required
@@ -139,7 +138,6 @@
                                 label="Role"
                                 item-value="key"
                                 item-text="value"
-                                :hide-details="true"
                                 dense
                                 outlined
                                 required
@@ -211,7 +209,6 @@
                                 label="Team"
                                 item-value="id"
                                 item-text="title"
-                                :hide-details="true"
                                 dense
                                 outlined
                                 required
@@ -226,7 +223,6 @@
                                 label="Role"
                                 item-value="key"
                                 item-text="value"
-                                :hide-details="true"
                                 dense
                                 outlined
                                 required
