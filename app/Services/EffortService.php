@@ -50,7 +50,6 @@ class EffortService
         }
         $ee = $effort == 0 ? 0 : round(100 * $budget / $effort, 2);
         $effort = round($effort, 2);
-
         return [
             'budget' => $budget,
             'effort' => $effort,

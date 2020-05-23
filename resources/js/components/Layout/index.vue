@@ -18,7 +18,7 @@
                         </v-list-item>
                     </template>
                     <template>
-                        <v-list-item @click="clickMenu('/teams')">
+                        <v-list-item @click="clickMenu('/teams')" v-if="permissionAdminLeader">
                             <v-list-item-action>
                                 <v-icon>home</v-icon>
                             </v-list-item-action>
@@ -29,7 +29,7 @@
                     </template>
 
                     <template>
-                        <v-list-item @click="clickMenu('/projects')">
+                        <v-list-item @click="clickMenu('/projects')" v-if="permissionAdmin">
                             <v-list-item-action>
                                 <v-icon>assignment</v-icon>
                             </v-list-item-action>
@@ -38,7 +38,7 @@
                             </v-list-item-content>
                         </v-list-item>
 
-                        <v-list-item @click="clickMenu('/users')">
+                        <v-list-item @click="clickMenu('/users')" v-if="permissionAdmin">
                             <v-list-item-action>
                                 <v-icon>people</v-icon>
                             </v-list-item-action>
@@ -47,7 +47,7 @@
                             </v-list-item-content>
                         </v-list-item>
 
-                        <v-list-item @click="clickMenu('/phases')">
+                        <v-list-item @click="clickMenu('/phases')" v-if="permissionAdmin">
                             <v-list-item-action>
                                 <v-icon>link</v-icon>
                             </v-list-item-action>
@@ -56,7 +56,7 @@
                             </v-list-item-content>
                         </v-list-item>
 
-                        <v-list-item @click="clickMenu('/overviewmm')">
+                        <v-list-item @click="clickMenu('/overviewmm')" v-if="permissionAdmin">
                             <v-list-item-action>
                                 <v-icon>widgets</v-icon>
                             </v-list-item-action>
@@ -64,7 +64,7 @@
                                 <v-list-item-title class="font-weight-bold">Overview MM</v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
-                        <v-list-item @click="clickMenu('/overviewAllocate')">
+                        <v-list-item @click="clickMenu('/overviewAllocate')" v-if="permissionAdmin">
                             <v-list-item-action>
                                 <v-icon>widgets</v-icon>
                             </v-list-item-action>
@@ -72,7 +72,8 @@
                                 <v-list-item-title class="font-weight-bold">Overview Allcate</v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
-                        <v-list-item @click="clickMenu('/activitylogs')">
+                        <v-list-item @click="clickMenu('/activitylogs')" v-if="permissionAdminLeader">
+
                             <v-list-item-action>
                                 <v-icon>mdi-call-split</v-icon>
                             </v-list-item-action>
@@ -118,10 +119,12 @@
                 <span class="hidden-sm-and-down white--text text--lighten-1">HBHome</span>
             </v-toolbar-title>
             <v-spacer />
-            <v-icon>people</v-icon>
-            <v-toolbar-title class="ml-1">
-                <span class="hidden-sm-and-down white--text text--lighten-1">{{ userInfo.email }}</span>
-            </v-toolbar-title>
+                <v-icon>people</v-icon>
+                <v-toolbar-title class="ml-1">
+                    <span class="hidden-sm-and-down white--text text--lighten-1">
+                        {{ userInfo.email }}
+                    </span>
+                </v-toolbar-title>
         </v-app-bar>
         <v-content>
             <v-container>
@@ -132,18 +135,24 @@
 </template>
 
 <script>
+    import { USER_ROLE_STRING } from '../../constants/common';
     export default {
         data: () => ({
             dialog: false,
             drawer: null,
             user : null,
         }),
-        created() {
-            this.getUser();
-        },
         computed: {
+            permissionAdminLeader() {
+                const currentUser = this.userInfo;
+                return currentUser.role === USER_ROLE_STRING.Admin || currentUser.role === USER_ROLE_STRING.Leader;
+            },
+            permissionAdmin() {
+                const currentUser = this.userInfo;
+                return currentUser.role === USER_ROLE_STRING.Admin;
+            },
             userInfo: function() {
-                return this.$auth.user();
+                return this.$store.getters['hbhome/currentUser'];
             },
         },
         methods: {
@@ -184,12 +193,6 @@
                 if (this.$router.currentRoute.path !== routeName) {
                     this.$router.push({ path: routeName });
                 }
-            },
-            getUser() {
-                this.axios
-                .get('api/auth/me')
-                .then(res => {
-                })
             }
         },
     }

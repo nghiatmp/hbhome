@@ -53,6 +53,9 @@
             this.$root.$on('event-change-resource', () => {
                 this.renderData();
             });
+            this.$root.$on('event-change-member', () => {
+                this.renderData();
+            });
         },
         methods:{
             renderData(){

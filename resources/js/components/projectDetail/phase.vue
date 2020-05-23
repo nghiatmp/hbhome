@@ -26,7 +26,7 @@
                         Phases
                     </span>
                 </v-col>
-                <v-col class="mt-2" cols="6">
+                <v-col class="mt-2" cols="6" v-if="permissionAdminPM">
                     <div class="d-flex justify-end" flat tile>
                         <v-btn class="mr-5" depressed color="primary" @click="diaLogcreatePhase=true">
                             Create Phase
@@ -45,8 +45,8 @@
                         <template v-slot:item.id="{ item }">
                             <v-layout justify-center>
                                 <v-icon @click="getInForPhase(item)">info</v-icon>
-                                <v-icon class="ml-2" @click="getdataUpdate(item)">fas fa-edit</v-icon>
-                                <v-icon class="ml-2" @click="getdataChangeStatus(item)">far fa-clone</v-icon>
+                                <v-icon class="ml-2" @click="getdataUpdate(item)" v-if="permissionAdminPM">fas fa-edit</v-icon>
+                                <v-icon class="ml-2" @click="getdataChangeStatus(item)" v-if="permissionAdminPM">far fa-clone</v-icon>
                             </v-layout>
                         </template>
                     </v-data-table>
@@ -391,11 +391,12 @@
 </template>
 
 <script>
-    import {PHASE_STATUS} from "../../constants/common";
+    import {PHASE_STATUS, PROJECT_ROLE_STRING, USER_ROLE_STRING} from "../../constants/common";
     import {between, required, minValue, helpers, maxLength } from "vuelidate/lib/validators";
     const regexKey = helpers.regex('regexNumber', /^[+-]?([0-9]*[.])?[0-9]+$/);
     import moment from 'moment-timezone';
     export default {
+        props:['members','currentUserNow'],
         data () {
             return {
                 tableData:[],
@@ -461,6 +462,11 @@
             }
         },
         computed:{
+            permissionAdminPM() {
+                const members = this.members;
+                const member = members.filter(member => member.user_id === this.currentUserNow.id);
+                return this.currentUserNow.role === USER_ROLE_STRING.Admin || member[0].role === PROJECT_ROLE_STRING.ADMIN;
+            },
             ProjectID(){
                 return this.$route.params.proID;
             },
