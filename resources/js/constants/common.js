@@ -9,12 +9,18 @@ export const TYPE_ACTIVITY_LOG = [
     {key : '3', value : 'Resource' },
     {key : '4', value : 'Member' },
 ];
-export const SYSTEM_ROLE = [
+export const  SYSTEM_ROLE = [
     {key : '0', value : 'Inactive' },
     {key : '3', value : 'Member' },
     {key : '7', value : 'Leader' },
     {key : '15', value : 'Admin' },
 ];
+export const USER_ROLE_STRING = {
+    Member: 3,
+    Leader: 7,
+    Admin: 15,
+    Inactive:0
+};
 export const TYPE_ACTIVITY_LOG_DEFAULT = '0';
 
 export const PHASE_STATUS = [
@@ -51,3 +57,13 @@ export const PROJECT_ROLE = [
     {key : '7', value : 'OTHERS' },
     {key : '15', value : 'ADMIN' },
 ];
+export const PROJECT_ROLE_STRING = {
+    DEVELOPER : 1,
+    TESTER : 2,
+    BA : 3,
+    COMTOR : 4,
+    ACCOUNT : 5,
+    QA : 6,
+    OTHERS : 7,
+    ADMIN : 15
+};

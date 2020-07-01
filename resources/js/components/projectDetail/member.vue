@@ -77,7 +77,7 @@
                                 <v-date-picker v-model="param.to" locale="UTC" :min="minfrom" :max ="maxto"  @input="menuTo=false" />
                             </v-menu>
                         </v-col>
-                        <v-col>
+                        <v-col v-if="permissionAdminPM">
                             <v-btn depressed color="primary" @click="diaLogcreateMember=true">
                                 Create Member
                             </v-btn>
@@ -135,12 +135,21 @@
                                 :items="tableData"
                                 class="elevation-4 mb-4"
                                 locale="US"
+                                v-if="permissionAdminPM"
                             >
                                 <template v-slot:item.id="{ item }">
                                     <v-layout justify-center>
                                         <v-icon @click="getDataUpdate(item)">far fa-edit mr-2</v-icon>
                                     </v-layout>
                                 </template>
+                            </v-data-table>
+                            <v-data-table
+                                :headers="headersMember"
+                                :items="tableData"
+                                class="elevation-4 mb-4"
+                                locale="US"
+                                v-if="!permissionAdminPM"
+                            >
                             </v-data-table>
                         </v-card>
                     </v-card>
@@ -334,9 +343,10 @@
 
 <script>
     import {Chart} from 'highcharts-vue'
-    import {PROJECT_ROLE, MEMBER_STATUS} from "../../constants/common";
+    import {PROJECT_ROLE, MEMBER_STATUS, USER_ROLE_STRING, PROJECT_ROLE_STRING} from "../../constants/common";
     import {between, integer, required} from "vuelidate/lib/validators";
     export default {
+        props:['members','currentUserNow'],
         data () {
             return {
                 tab: null,
@@ -393,6 +403,12 @@
                     { text: 'Status', value: 'is_member' },
                     { text: '', value: 'id' },
                 ],
+                headersMember: [
+                    { text: 'Full Name', value: 'user.full_name' },
+                    { text: 'Email', value: 'user.email' },
+                    { text: 'Role', value: 'role'},
+                    { text: 'Status', value: 'is_member' },
+                ],
                 chartOptions: {
                     chart: {
                         plotBackgroundColor: null,
@@ -447,6 +463,11 @@
             },
         },
         computed:{
+            permissionAdminPM() {
+                const members = this.members;
+                const member = members.filter(member => member.user_id === this.currentUserNow.id);
+                return this.currentUserNow.role === USER_ROLE_STRING.Admin || member[0].role === PROJECT_ROLE_STRING.ADMIN;
+            },
             ProjectID(){
                 return this.$route.params.proID;
             },

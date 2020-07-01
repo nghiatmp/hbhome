@@ -18,7 +18,7 @@
         </v-snackbar>
         <v-card>
             <v-row>
-                <v-col>
+                <v-col v-if="permissionAdmin">
                     <div class="d-flex justify-end" flat tile>
                         <v-btn
                             class="mr-10"
@@ -135,6 +135,7 @@
                         :items="tableData"
                         class="elevation-4 mb-4"
                         locale="US"
+                        v-if="permissionAdmin"
                     >
                         <template v-slot:item.id="{ item }">
                             <v-layout justify-center>
@@ -142,6 +143,14 @@
                                 <v-icon class="ml-2" @click="detete(item.id)">far fa-trash-alt</v-icon>
                             </v-layout>
                         </template>
+                    </v-data-table>
+                    <v-data-table
+                        :headers="headersMember"
+                        :items="tableData"
+                        class="elevation-4 mb-4"
+                        locale="US"
+                        v-if="!permissionAdmin"
+                    >
                     </v-data-table>
                 </v-tab-item>
             </v-tabs>
@@ -374,6 +383,7 @@
     import Calendar from 'v-calendar/lib/components/calendar.umd'
     import DatePicker from 'v-calendar/lib/components/date-picker.umd'
     import { required, maxLength } from 'vuelidate/lib/validators';
+    import {USER_ROLE_STRING} from "../../constants/common";
 
     export default {
         name: 'Index',
@@ -430,10 +440,23 @@
                     {text: 'To', value: 'to_at', align: 'center'},
                     {text: '', value: 'id', align: 'center'},
                 ],
+                headersMember: [
+                    {text: 'No', value: 'duration'},
+                    {text: 'Title', value: 'title'},
+                    {text: 'From', value: 'from_at'},
+                    {text: 'To', value: 'to_at', align: 'center'},
+                ],
                 attrs: [],
             }
         },
         computed: {
+            permissionAdmin() {
+                const currentUser = this.userInfo;
+                return currentUser.role === USER_ROLE_STRING.Admin;
+            },
+            userInfo: function() {
+                return this.$auth.user();
+            },
             paramsChangeToRender() {
                 return {
                     from_at: this.params.from_at,

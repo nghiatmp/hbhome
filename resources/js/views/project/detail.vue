@@ -7,13 +7,13 @@
             <EE/>
         </v-card>
         <v-card>
-            <Resourves/>
+            <Resourves v-bind:members="members" v-bind:currentUserNow="currentUserNow"/>
         </v-card>
         <v-card>
-            <Member/>
+            <Member v-bind:members="members" v-bind:currentUserNow="currentUserNow"/>
         </v-card>
         <v-card>
-            <Phase/>
+            <Phase v-bind:members="members" v-bind:currentUserNow="currentUserNow"/>
         </v-card>
 
     </Layout>
@@ -26,6 +26,7 @@
     import Member from '../../components/projectDetail/member';
     import Phase from '../../components/projectDetail/phase';
     import EE from '../../components/projectDetail/ee';
+    import {MEMBER_STATUS, PROJECT_ROLE, PROJECT_ROLE_STRING, USER_ROLE_STRING} from "../../constants/common";
     export default {
         name: 'Index',
         components: {
@@ -38,6 +39,36 @@
         },
         data() {
             return {
+                members : [],
+                currentUserNow : null,
+            }
+        },
+        computed : {
+            ProjectID(){
+                return this.$route.params.proID;
+            },
+        },
+        created() {
+            this.renderData();
+            this.getUser();
+        },
+        methods : {
+            renderData() {
+                const ProjectID = this.ProjectID;
+                this.axios
+                    .get(`/api/projects/${ProjectID}/members`)
+                    .then(res=>{
+                        this.members =res.data.data;
+                    })
+                    .catch(err=>{
+                    });
+            },
+            getUser() {
+                this.axios
+                    .get('/api/auth/me')
+                    .then(res => {
+                        this.currentUserNow=res.data;
+                    })
             }
         }
     };
