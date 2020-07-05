@@ -85,7 +85,10 @@
                     success: function(res) {
                         this.hasError = false;
                         this.loading = false;
-                        localStorage.setItem('UserInfor',res.data.user);
+                        if(JSON.parse(localStorage.getItem('UserInfor'))){
+                            window.localStorage.removeItem('UserInfor');
+                        }
+                        localStorage.setItem('UserInfor',JSON.stringify(res.data.user));
                         this.$store.dispatch('hbhome/setCurrentUser', res.data.user);
                         this.$router.push({ path: '/admin/dashboard' });
                     },

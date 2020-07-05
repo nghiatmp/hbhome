@@ -44,7 +44,7 @@ class HolidayService
                 $query->where('to_at', '<=', $toAt);
             })
             ->orderBy('from_at', 'desc')
-            ->paginate(20, $columns, 'page')
+            ->paginate(100, $columns, 'page')
             ->toArray();
 
         return [

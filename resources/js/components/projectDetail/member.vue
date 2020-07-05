@@ -24,7 +24,8 @@
             <v-row>
                 <v-col class="mt-2" cols="6" md="6" sm="6">
                     <span class="font-weight-bold headline ml-5">
-                        Member
+                        <router-link :to="`/projects/${projectId}`" style="text-decoration: none; color: #1b1e21">Project/</router-link>
+                            Member
                     </span>
                 </v-col>
                 <v-col class="mt-2" cols="6">
@@ -395,7 +396,7 @@
                 },
                 'UserCreate' :[],
                 'RoleCreate' : PROJECT_ROLE,
-
+                projectId:null,
                 headers: [
                     { text: 'Full Name', value: 'user.full_name' },
                     { text: 'Email', value: 'user.email' },
@@ -537,21 +538,22 @@
             this.renderData();
             this.getUserToCreate();
         },
-        mounted() {
-            this.$root.$on('event-change-resource', () => {
-                this.renderData();
-            });
-            this.$root.$on('event-change-create-phase', () => {
-                this.getDefaultDate();
-                this.renderData();
-            });
-            this.$root.$on('event-change-update-phase', () => {
-                this.getDefaultDate();
-                this.renderData();
-            });
-        },
+        // mounted() {
+        //     this.$root.$on('event-change-resource', () => {
+        //         this.renderData();
+        //     });
+        //     this.$root.$on('event-change-create-phase', () => {
+        //         this.getDefaultDate();
+        //         this.renderData();
+        //     });
+        //     this.$root.$on('event-change-update-phase', () => {
+        //         this.getDefaultDate();
+        //         this.renderData();
+        //     });
+        // },
         methods:{
             renderData() {
+                this.projectId=this.ProjectID;
                 this.isLoadingDataMember = true;
                 const ProjectID = this.ProjectID;
                 const params= Object.keys(this.param).reduce((prev, key) => {
@@ -723,7 +725,7 @@
                     .post(`/api/projects/${ProID}/members`, paramsCreate)
                     .then(res => {
                         this.renderData();
-                        this.$root.$emit('event-change-member');
+                        // this.$root.$emit('event-change-member');
                         this.diaLogcreateMember = false;
                         this.errExistUserInProject = false;
                         this.ClearValidateCreate();

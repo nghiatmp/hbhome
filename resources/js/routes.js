@@ -12,7 +12,8 @@ import OverviewMM from './views/overviewmm/index';
 import OverviewAllocate from './views/overviewallocate/index';
 import ActivityLogs from './views/activityLog/index';
 import Holiday from './views/holiday/index';
-
+import ProjectMember from  './views/project/projectMember';
+import ProjectResource from  './views/project/ProjectResource';
 
 const routes = [
     {
@@ -34,6 +35,14 @@ const routes = [
     {
         path: '/projects/:proID',
         component: DetailProject,
+    },
+    {
+        path: '/projects/member/:proID',
+        component: ProjectMember,
+    },
+    {
+        path: '/projects/resource/:proID',
+        component: ProjectResource,
     },
     {
         path: '/users',

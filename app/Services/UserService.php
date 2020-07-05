@@ -116,7 +116,7 @@ class UserService
             })
             ->orderBy($orderBy, $sortType)
             ->with('availableTeam')
-            ->paginate(20, $columns, 'page')
+            ->paginate(100, $columns, 'page')
             ->toArray();
 
         return [

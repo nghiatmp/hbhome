@@ -24,6 +24,7 @@
            <v-row>
                <v-col class="mt-2" cols="6" md="6" sm="6">
                    <span class="font-weight-bold headline ml-5">
+                   <router-link :to="`/projects/${projectId}`" style="text-decoration: none; color: #1b1e21">Project/</router-link>
                     Resource
                     </span>
                </v-col>
@@ -496,6 +497,8 @@
                 errMessageUpdateDisplay:'',
                 UserCreate :[],
                 RoleCreate : PROJECT_ROLE,
+                projectId: null,
+
                 headers: [
                     { text: 'Full Name', value: 'user.full_name'},
                     { text: 'Role', value: 'role' },
@@ -646,25 +649,26 @@
             this.getUserCreateResource();
             this.renderData();
         },
-        mounted() {
-            this.$root.$on('event-change-member', () => {
-                this.getUserCreateResource();
-                this.renderData();
-            });
-            this.$root.$on('event-change-create-phase', () => {
-                this.getUserCreateResource();
-                this.getDefaultDate();
-                this.renderData();
-            });
-            this.$root.$on('event-change-update-phase', () => {
-                this.getUserCreateResource();
-                this.getDefaultDate();
-                this.renderData();
-            });
-        },
+        // mounted() {
+        //     this.$root.$on('event-change-member', () => {
+        //         this.getUserCreateResource();
+        //         this.renderData();
+        //     });
+        //     this.$root.$on('event-change-create-phase', () => {
+        //         this.getUserCreateResource();
+        //         this.getDefaultDate();
+        //         this.renderData();
+        //     });
+        //     this.$root.$on('event-change-update-phase', () => {
+        //         this.getUserCreateResource();
+        //         this.getDefaultDate();
+        //         this.renderData();
+        //     });
+        // },
         methods:{
             renderData()
             {
+                this.projectId = this.ProjectID;
                 this.isLoadingDataResource = true;
                 const ProjectID = this.ProjectID;
                 const params= Object.keys(this.param).reduce((prev, key) => {
@@ -758,7 +762,7 @@
                             this.diaLogcreateResource = false;
                             this.errMessageCreate = false;
                             this.ClearValidateCreate();
-                            this.$root.$emit('event-change-resource');
+                            // this.$root.$emit('event-change-resource');
                             this.snackbar = true;
                             this.snackbarText = 'Add Resource Success';
                             this.colors = 'success';
@@ -791,7 +795,7 @@
                         .put(`/api/resources/${IdResource}`, paramUpdate)
                         .then(res => {
                             this.renderData();
-                            this.$root.$emit('event-change-resource');
+                            // this.$root.$emit('event-change-resource');
                             this.diaLogUpdateResource = false;
                             this.errMessageUpdate = false;
                             this.ClearValidateUpdate();
@@ -819,7 +823,7 @@
                     .delete(`/api/resources/${reId}`)
                     .then(res=>{
                         this.renderData();
-                        this.$root.$emit('event-change-resource');
+                        // this.$root.$emit('event-change-resource');
                         this.diaLogdeleteResource = false;
                         this.snackbar = true;
                         this.snackbarText = 'Remove Resource Success';

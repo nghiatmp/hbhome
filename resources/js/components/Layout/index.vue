@@ -122,7 +122,9 @@
                 <v-icon>people</v-icon>
                 <v-toolbar-title class="ml-1">
                     <span class="hidden-sm-and-down white--text text--lighten-1">
-                        {{ userInfo.email }}
+                        <router-link :to="`/users/${user.id}`" style="text-decoration: none; color: white">
+                        {{ user.email }}
+                        </router-link>
                     </span>
                 </v-toolbar-title>
         </v-app-bar>
@@ -140,15 +142,15 @@
         data: () => ({
             dialog: false,
             drawer: null,
-            user : null,
+            user : JSON.parse(localStorage.getItem('UserInfor')),
         }),
         computed: {
             permissionAdminLeader() {
-                const currentUser = this.userInfo;
+                const currentUser = JSON.parse(localStorage.getItem('UserInfor'));
                 return currentUser.role === USER_ROLE_STRING.Admin || currentUser.role === USER_ROLE_STRING.Leader;
             },
             permissionAdmin() {
-                const currentUser = this.userInfo;
+                const currentUser = JSON.parse(localStorage.getItem('UserInfor'));
                 return currentUser.role === USER_ROLE_STRING.Admin;
             },
             userInfo: function() {
@@ -184,6 +186,7 @@
                 this.$auth.logout({
                     error: function() {
                         window.localStorage.removeItem('User_token');
+                        window.localStorage.removeItem('UserInfor');
                         this.$router.push({ path: '/login' });
                     },
                     redirect: '/login',

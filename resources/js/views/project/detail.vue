@@ -6,16 +6,30 @@
         <v-card>
             <EE/>
         </v-card>
-        <v-card>
-            <Resourves v-bind:members="members" v-bind:currentUserNow="currentUserNow"/>
-        </v-card>
-        <v-card>
-            <Member v-bind:members="members" v-bind:currentUserNow="currentUserNow"/>
-        </v-card>
+        <v-row class="mt-5 my-2">
+            <v-col cols="6" sm="6" md="6" lg="6" xs="6">
+                <router-link :to="`/projects/member/${projectId}`" style="text-decoration: none">
+                    <v-card color="#7cb342" style="color: white">
+                        <p  class="ml-5 font-weight-medium display-1 pt-2"></p>
+                        <v-list-item-title class="ml-5 font-weight-medium headline">Member Project </v-list-item-title>
+                        <p  class="ml-5 font-weight-medium display-1 pt-2"></p>
+                    </v-card>
+                </router-link>
+            </v-col>
+            <v-col cols="6" sm="6" md="6" lg="6" xs="6">
+                <router-link :to="`/projects/resource/${projectId}`" style="text-decoration: none">
+                    <v-card color="#7cb342" style="color: white">
+                        <p  class="ml-5 font-weight-medium display-1 pt-2"></p>
+                        <v-list-item-title class="ml-5 font-weight-medium headline">Resource Project </v-list-item-title>
+                        <p  class="ml-5 font-weight-medium display-1 pt-2"></p>
+                    </v-card>
+                </router-link>
+            </v-col>
+
+        </v-row>
         <v-card>
             <Phase v-bind:members="members" v-bind:currentUserNow="currentUserNow"/>
         </v-card>
-
     </Layout>
 </template>
 
@@ -41,6 +55,7 @@
             return {
                 members : [],
                 currentUserNow : null,
+                projectId: null,
             }
         },
         computed : {
@@ -55,6 +70,7 @@
         methods : {
             renderData() {
                 const ProjectID = this.ProjectID;
+                this.projectId=this.ProjectID;
                 this.axios
                     .get(`/api/projects/${ProjectID}/members`)
                     .then(res=>{
