@@ -66,14 +66,29 @@
                     .then(res=>{
                         const dataEE =res.data;
                         this.budget = dataEE.budget ? dataEE.budget : 0;
-                        this.user = dataEE.effort;
-                        this.ee = dataEE.ee;
-                        this.isLoading = false;
+                        // this.user = dataEE.effort;
+                        // this.ee = dataEE.ee;
+                        // this.isLoading = false;
 
                     })
                     .catch(err=>{
                         this.isLoading = false;
                     });
+                this.axios
+                    .get(`/api/projects/${ProjectID}/effort`)
+                    .then(res=>{
+                        const dataResource =res.data.efforts;
+                        let dataMM = 0;
+                        Object.values(dataResource).forEach(key =>{
+                            dataMM += key.mm;
+                        });
+                        this.user = dataMM.toFixed(2);
+                        this.ee = dataMM != 0 ? ((this.budget/dataMM)*100).toFixed(2) : 0 ;
+                    })
+                    .catch(err=>{
+                        this.isLoading = false;
+                    });
+                this.isLoading = false;
             }
         }
     }

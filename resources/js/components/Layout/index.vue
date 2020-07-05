@@ -122,7 +122,9 @@
                 <v-icon>people</v-icon>
                 <v-toolbar-title class="ml-1">
                     <span class="hidden-sm-and-down white--text text--lighten-1">
+                        <router-link :to="`/users/${user.id}`" style="text-decoration: none; color: white">
                         {{ user.email }}
+                        </router-link>
                     </span>
                 </v-toolbar-title>
         </v-app-bar>

@@ -823,7 +823,7 @@
                     .delete(`/api/resources/${reId}`)
                     .then(res=>{
                         this.renderData();
-                        this.$root.$emit('event-change-resource');
+                        // this.$root.$emit('event-change-resource');
                         this.diaLogdeleteResource = false;
                         this.snackbar = true;
                         this.snackbarText = 'Remove Resource Success';
