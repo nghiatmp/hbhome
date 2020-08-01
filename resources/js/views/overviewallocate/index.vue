@@ -31,6 +31,11 @@
                 type="card"
                 v-if="isLoadingData"
             />
+            <v-container>
+                <div style="margin: auto">
+                    <TreeChart :json="treeData" />
+                </div>
+            </v-container>
             <v-tabs v-if="!isLoadingData"
                     v-model="tab"
                     background-color="light-blue darken-1"
@@ -62,32 +67,32 @@
                     id="tab_chart"
                 >
                     <v-row>
-                        <v-col cols="6" md="12" sm="12"  lg="6">
-                            <v-card-title class="text-center" style="width: 600px; margin:auto">
-                                EE Information Overview
-                            </v-card-title>
-                            <v-container>
-                                <v-simple-table style="margin:auto">
-                                    <template v-slot:default>
-                                        <thead>
-                                        <tr>
-                                            <th class="text-left">Name Team</th>
-                                            <th class="text-left">EE</th>
-                                            <th class="text-left">Budget</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr v-for="item in tableData" :key="item.name">
-                                            <td>{{ item.name }}</td>
-                                            <td>{{ item.ee }}</td>
-                                            <td>{{ item.budget }}</td>
-                                        </tr>
-                                        </tbody>
-                                    </template>
-                                </v-simple-table>
-                            </v-container>
-                        </v-col>
-                        <v-col cols="6" md="12" sm="12" lg="6">
+<!--                        <v-col cols="6" md="12" sm="12"  lg="6">-->
+<!--                            <v-card-title class="text-center" style="width: 600px; margin:auto">-->
+<!--                                EE Information Overview-->
+<!--                            </v-card-title>-->
+<!--                            <v-container>-->
+<!--                                <v-simple-table style="margin:auto">-->
+<!--                                    <template v-slot:default>-->
+<!--                                        <thead>-->
+<!--                                        <tr>-->
+<!--                                            <th class="text-left">Name Team</th>-->
+<!--                                            <th class="text-left">EE</th>-->
+<!--                                            <th class="text-left">Budget</th>-->
+<!--                                        </tr>-->
+<!--                                        </thead>-->
+<!--                                        <tbody>-->
+<!--                                        <tr v-for="item in tableData" :key="item.name">-->
+<!--                                            <td>{{ item.name }}</td>-->
+<!--                                            <td>{{ item.ee }}</td>-->
+<!--                                            <td>{{ item.budget }}</td>-->
+<!--                                        </tr>-->
+<!--                                        </tbody>-->
+<!--                                    </template>-->
+<!--                                </v-simple-table>-->
+<!--                            </v-container>-->
+<!--                        </v-col>-->
+                        <v-col cols="12" md="12" sm="12" lg="12">
                             <v-card-title class="text-center" style="width: 600px; margin:auto">
                                 EE Information Project
                             </v-card-title>
@@ -150,9 +155,10 @@
 <script>
     import Layout from '../../components/Layout/index';
     import moment from 'moment-timezone';
+    import TreeChart from "vue-tree-chart";
     export default {
         name: 'Index',
-        components: { Layout },
+        components: { Layout, TreeChart },
         data(){
             return {
                 tab: null,
@@ -164,6 +170,7 @@
                 nextIcon: false,
                 right: false,
                 isLoadingData:false,
+                treeData: null,
                 params : {
                     'month': moment(new Date().toISOString().slice(0, 10)).format('YYYY-MM'),
                 },
@@ -205,6 +212,7 @@
                     .get('api/overview/ee', {params})
                     .then(res=>{
                         const dataEE = res.data;
+
                         const dataReturn = [
                             {
                                 name: dataEE.title,
@@ -216,7 +224,7 @@
                         if (dataEE.children.length > 0 ) {
                             Object.values(dataEE.children).forEach(item => {
                                 if (item.title == 'Free') {
-                                    this.dataFreeUser =item.children;
+                                    this.dataFreeUser = item.children;
                                 }else {
                                     var child = {
                                         name: item.title,
@@ -251,6 +259,12 @@
                         }
                         this.dataProject = dataProject;
                         this.tableData = dataReturn;
+
+                        let tree =  dataEE;
+                        if (tree.children.length > 0) {
+                            tree.children.pop();
+                        }
+                        this.treeData = tree;
                         this.isLoadingData = false;
                     })
                     .catch(()=> {

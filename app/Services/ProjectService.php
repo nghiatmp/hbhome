@@ -58,6 +58,14 @@ class ProjectService
             'data' => $projects
         ];
     }
+    public function total()
+    {
+        $projects = $this->project->get()->toArray();
+
+        return [
+            'data' => $projects
+        ];
+    }
 
     /**
      * @param ['title', 'key', 'contract', 'rank', 'note', 'team_id', 'status', 'backlog_key', 'tms_key',

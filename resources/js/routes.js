@@ -9,6 +9,7 @@ import Users from './views/user/index';
 import UserDetail from './views/user/detail';
 import Phases from './views/phase/index';
 import OverviewMM from './views/overviewmm/index';
+import OverviewAll from './views/overviewAll/index';
 import OverviewAllocate from './views/overviewallocate/index';
 import ActivityLogs from './views/activityLog/index';
 import Holiday from './views/holiday/index';
@@ -59,6 +60,10 @@ const routes = [
     {
         path: '/overviewmm',
         component: OverviewMM,
+    },
+    {
+        path: '/overviewall',
+        component: OverviewAll,
     },
     {
         path: '/overviewAllocate',

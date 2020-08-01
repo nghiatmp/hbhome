@@ -60,22 +60,23 @@
                     v-if="isLoadingData"
                 />
                 <v-container v-if="!isLoadingData">
-                    <v-simple-table>
-                        <template v-slot:default>
-                            <thead>
-                            <tr>
-                                <th class="text-left">Name Team</th>
-                                <th class="text-left">MM</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr v-for="item in tableData" :key="item.name">
-                                <td>{{ item.name }}</td>
-                                <td>{{ item.value }}</td>
-                            </tr>
-                            </tbody>
-                        </template>
-                    </v-simple-table>
+                    <TreeChart :json="treeData" />
+<!--                    <v-simple-table>-->
+<!--                        <template v-slot:default>-->
+<!--                            <thead>-->
+<!--                            <tr>-->
+<!--                                <th class="text-left">Name Team</th>-->
+<!--                                <th class="text-left">MM</th>-->
+<!--                            </tr>-->
+<!--                            </thead>-->
+<!--                            <tbody>-->
+<!--                            <tr v-for="item in tableData" :key="item.name">-->
+<!--                                <td>{{ item.name }}</td>-->
+<!--                                <td>{{ item.value }}</td>-->
+<!--                            </tr>-->
+<!--                            </tbody>-->
+<!--                        </template>-->
+<!--                    </v-simple-table>-->
                 </v-container>
             </v-card>
         </v-card>
@@ -85,19 +86,21 @@
 <script>
     import Layout from '../../components/Layout/index';
     import moment from 'moment-timezone';
+    import TreeChart from "vue-tree-chart";
     export default {
         name: 'Index',
-        components: { Layout },
+        components: { Layout,TreeChart },
         data(){
             return {
-                isLoadingData:false,
-                params : {
+                isLoadingData: false,
+                params: {
                     'from': moment(new Date().toISOString().slice(0, 10)).format('YYYY-MM'),
                     'to': moment(new Date().toISOString().slice(0, 10)).format('YYYY-MM'),
                 },
-                tableData:[],
+                // tableData: [],
                 menuFrom: false,
                 menuTo: false,
+                treeData: null,
             }
         },
         computed:{
@@ -132,6 +135,7 @@
                     .get('api/overview/mm', {params})
                     .then(res=>{
                         const dataMM = res.data;
+                        this.treeData = res.data;
                         const dataReturn = [
                             {
                                 name: dataMM.title,
@@ -139,25 +143,25 @@
                             },
                         ];
 
-                        if (dataMM.children.length > 0 ) {
-                            Object.values(dataMM.children).forEach(item => {
-                                var child = {
-                                    name : item.title,
-                                    value: item.mm,
-                                };
-                                dataReturn.push(child);
-                                if(item.children.length > 0) {
-                                    Object.values(item.children).forEach(key=> {
-                                        var childrend = {
-                                            name : item.title+'-'+key.title,
-                                            value: key.mm,
-                                        };
-                                        dataReturn.push(childrend);
-                                    })
-                                }
-                            });
-                        }
-                        this.tableData = dataReturn;
+                        // if (dataMM.children.length > 0 ) {
+                        //     Object.values(dataMM.children).forEach(item => {
+                        //         var child = {
+                        //             name : item.title,
+                        //             value: item.mm,
+                        //         };
+                        //         dataReturn.push(child);
+                        //         if(item.children.length > 0) {
+                        //             Object.values(item.children).forEach(key=> {
+                        //                 var childrend = {
+                        //                     name : item.title+'-'+key.title,
+                        //                     value: key.mm,
+                        //                 };
+                        //                 dataReturn.push(childrend);
+                        //             })
+                        //         }
+                        //     });
+                        // }
+                        // this.tableData = dataReturn;
                         this.isLoadingData = false;
                     })
                     .catch(()=> {
