@@ -80,7 +80,7 @@
                 },
                 chartOptions: {
                     chart: {
-                        type: 'column'
+                        type: 'spline'
                     },
                     title: {
                         text: 'ManMonth',

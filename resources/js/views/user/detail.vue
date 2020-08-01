@@ -1,8 +1,8 @@
 <template>
     <Layout>
-        <v-card class="mb-10">
-            <BusyRate></BusyRate>
-        </v-card>
+<!--        <v-card class="mb-10">-->
+<!--            <BusyRate></BusyRate>-->
+<!--        </v-card>-->
         <v-card class="mt-10 mb-10">
             <ManMonth></ManMonth>
         </v-card>

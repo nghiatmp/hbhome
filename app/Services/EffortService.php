@@ -102,6 +102,42 @@ class EffortService
             'efforts' => array_values($efforts),
         ];
     }
+    public function getEffortPerMonthAllProject($params)
+    {
+        $totalproject = $this->projectService->total();
+        $respose = [];
+        foreach ($totalproject['data'] as $projectTest) {
+            $project = $this->projectService->find($projectTest['id']);
+            list($from, $to) = $this->getEffortRange($project, $params);
+            if (is_null($from)) {
+                $efforts = [];
+            }
+            $resources = $project->resources()->get();
+            $holidays = $this->holidayService->getDates();
+
+            $efforts = array();
+            $loopFrom = Carbon::parse($from);
+            while ($loopFrom->lt($to)) {
+                $month = $loopFrom->format('m-Y');
+                $effort = 0;
+                foreach ($resources as $resource) {
+                    $start = Carbon::parse($loopFrom);
+                    $end = Carbon::parse($loopFrom)->endOfMonth();
+                    if ($month === $to->format('m-Y')) {
+                        $end = Carbon::parse($to);
+                    }
+                    $effort += $this->getManMonth($start, $end, $resource, $holidays);
+                }
+                $loopFrom->startOfMonth()->addMonth();
+//                $efforts[] = [
+//                    $month => round($effort, 2),
+//                ];
+                $respose[$project->title][$month] = round($effort, 2);
+            }
+//            $respose[$project->title]= $efforts;
+        }
+        return $respose;
+    }
 
     /**
      * @param integer $projectId

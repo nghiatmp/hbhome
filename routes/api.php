@@ -279,3 +279,4 @@ Route::group([
         Route::get('mm', 'MMController@main');
     });
 });
+Route::get('/totalresources', 'ResourceTotalController@main');

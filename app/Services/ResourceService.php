@@ -77,6 +77,22 @@ class ResourceService
             })
             ->get(['id', 'user_id', 'role', 'from_at', 'to_at', 'allocation'])
             ->toArray();
+//        dd($resources);
+
+        return [
+            'data' => $resources
+        ];
+    }
+    public function totalIndex($params)
+    {
+        $resources = $this->resource
+            ->with('user:id,full_name,email')
+            ->when(!is_null($params['from']) && !is_null($params['to']), function ($query) use ($params) {
+                $query->where('from_at', '>=', $params['from']);
+                $query->where('to_at', '<=', $params['to']);
+            })
+            ->get(['id', 'user_id', 'role', 'from_at', 'to_at', 'allocation'])
+            ->toArray();
 
         return [
             'data' => $resources

@@ -56,6 +56,15 @@
                             </v-list-item-content>
                         </v-list-item>
 
+                        <v-list-item @click="clickMenu('/overviewall')" v-if="permissionAdmin">
+                            <v-list-item-action>
+                                <v-icon>widgets</v-icon>
+                            </v-list-item-action>
+                            <v-list-item-content>
+                                <v-list-item-title class="font-weight-bold">OverviewAll</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+
                         <v-list-item @click="clickMenu('/overviewmm')" v-if="permissionAdmin">
                             <v-list-item-action>
                                 <v-icon>widgets</v-icon>
@@ -177,6 +186,8 @@
                     case '/activitylogs':
                         return 8;
                     case '/holiday':
+                        return 9;
+                    case '/overviewAll':
                         return 9;
                     default:
                         return 1;
